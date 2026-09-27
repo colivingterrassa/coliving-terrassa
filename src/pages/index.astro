@@ -1,4 +1,53 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
+
+function listImgs(dir) {
+  try {
+    return fs.readdirSync(dir)
+      .filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f))
+      .sort();
+  } catch (e) {
+    return [];
+  }
+}
+
+const FOTOS_DIR = path.join(process.cwd(), 'public', 'fotos');
+
+const PIS_SLUGS = {1:'22-juliol',2:'sant-jordi',3:'font-vella',4:'catalunya',5:'vapor-ventallo'};
+const HAB_PIS_OF = {
+  'PAS-1':1,'PAS-3':1,'PAS-4':1,
+  'SJO-1':2,'SJO-3':2,'SJO-5':2,
+  'FON-2':3,'FON-3':3,'FON-4':3,
+  'CAT-1':4,'CAT-4':4,'CAT-6':4,
+  'VAP-1':5,'VAP-2':5
+};
+
+const fotosPisos = {};
+for (const slug of Object.values(PIS_SLUGS)) {
+  fotosPisos[slug] = listImgs(path.join(FOTOS_DIR, 'pisos', slug))
+    .map(f => `/fotos/pisos/${slug}/${encodeURIComponent(f)}`);
+}
+
+const fotosHab = {};
+for (const codi of Object.keys(HAB_PIS_OF)) {
+  const slug = PIS_SLUGS[HAB_PIS_OF[codi]];
+  fotosHab[codi] = listImgs(path.join(FOTOS_DIR, 'habitacions', slug, codi))
+    .map(f => `/fotos/habitacions/${slug}/${codi}/${encodeURIComponent(f)}`);
+}
+
+const fotosResenyes = {};
+for (const f of listImgs(path.join(FOTOS_DIR, 'resenyes'))) {
+  const key = f.replace(/\.[^.]+$/, '').toLowerCase();
+  fotosResenyes[key] = `/fotos/resenyes/${encodeURIComponent(f)}`;
+}
+
+const FOTOS_JSON = JSON.stringify({
+  pisos: fotosPisos,
+  habitacions: fotosHab,
+  resenyes: fotosResenyes,
+  pisSlug: PIS_SLUGS
+});
 ---
 <html lang="ca">
 <head>
@@ -429,6 +478,11 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 .okb small{color:var(--muted);font-size:.76rem}
 .note{background:var(--navy);color:rgba(255,255,255,.78);font-size:.73rem;
   text-align:center;padding:8px 20px;letter-spacing:.04em}
+.ph-real{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.card:hover .ph-real{transform:scale(1.04)}
+img.av{object-fit:cover}
+.fgal{display:flex;gap:8px;overflow-x:auto;margin:14px 0 6px}
+.fgal img{width:110px;height:78px;object-fit:cover;border-radius:6px;flex:none}
 </style>
 </head>
 <body>
@@ -650,6 +704,24 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
   <div class="md__bx"><button class="md__x" data-close aria-label="X">✕</button><div id="mC"></div></div>
 </div>
 
+<script is:inline set:html={`window.FOTOS=${FOTOS_JSON};
+function coverHtml(imgs, seed, label, style){
+  var st = style ? ' style="'+style+'"' : '';
+  if(imgs && imgs.length) return '<img class="ph-real"'+st+' src="'+imgs[0]+'" alt="'+label+'" loading="lazy">';
+  return '<div class="ph ph--'+(seed%5)+'"'+st+'>'+label+'</div>';
+}
+function galeriaHtml(imgs){
+  if(!imgs || imgs.length<2) return '';
+  return '<div class="fgal">'+imgs.slice(1).map(function(f){return '<img src="'+f+'" alt="" loading="lazy">'}).join('')+'</div>';
+}
+function avatarHtml(name, style){
+  var key=(name||'').trim().split(/\s+/)[0].toLowerCase();
+  var src=(window.FOTOS.resenyes||{})[key];
+  var st = style ? ' style="'+style+'"' : '';
+  if(src) return '<img class="av"'+st+' src="'+src+'" alt="'+name+'">';
+  return '<div class="av"'+st+'>'+name[0]+'</div>';
+}
+`}}></script>
 <script is:inline>
 /* =====================================================================
    1. DADES — PISOS, HABITACIONS I RESSENYES
@@ -1235,7 +1307,7 @@ function aplica(){
   $('#grid').innerHTML=rows.map((p,i)=>{
     const e=estatPis(p.id), nl=lliuresDe(p.id).length, pd=preuDes(p.id);
     return `<button class="card ${nl?'':'card--off'}" data-pis="${p.id}">
-      <div class="card__m"><div class="ph ph--${i%5}">${esc(p.nom)}</div>
+      <div class="card__m">${coverHtml(FOTOS.pisos[FOTOS.pisSlug[p.id]], i, esc(p.nom))}
         <span class="bdg bdg--${e.c}">${e.t}</span>
         <span class="cnt">${nl} ${nl===1?t('hab'):t('habs')} ${nl===1?t('lliure'):t('lliures')}</span></div>
       <div class="card__b">
@@ -1280,7 +1352,7 @@ function obrirPis(id){
   $('#pvC').innerHTML=`
     <div class="crumb"><button onclick="anarLlista()">← ${t('tornar')}</button>
       <span>/</span><span>${esc(p.nom)}</span></div>
-    <div class="pv__hero"><div class="ph ph--${(id-1)%5}" style="font-size:2.4rem">${esc(p.nom)}</div></div>
+    <div class="pv__hero">${coverHtml(FOTOS.pisos[FOTOS.pisSlug[p.id]], id-1, esc(p.nom), "font-size:2.4rem")}</div>\n    ${galeriaHtml(FOTOS.pisos[FOTOS.pisSlug[p.id]])}
     <div class="pv__g">
       <div>
         <h1>${esc(p.nom)}</h1>
@@ -1307,7 +1379,7 @@ function obrirPis(id){
             const e=estatHab(h), ok=!actius||habPassa(h,f);
             return `<button class="room ${h.estat==='ocupada'?'room--off':''}" data-hab="${h.id}"
               ${ok?'':'style="opacity:.4"'}>
-              <div class="room__m"><div class="ph ph--${i%5}">${esc(h.codi)}</div></div>
+              <div class="room__m">${coverHtml(FOTOS.habitacions[h.codi], i, esc(h.codi))}</div>
               <div class="room__b">
                 <div class="room__t">${esc(h.codi)} · ${t(h.tipus)}</div>
                 <div class="room__s">${h.m2} m² · ${t('bany')} ${t(h.bany).toLowerCase()}</div>
@@ -1322,7 +1394,7 @@ function obrirPis(id){
               <div class="st">${'★'.repeat(r.r)}</div>
               <p style="font-size:.92rem;color:var(--ink-2)">${r.t[L]}</p>
               <div style="margin-top:14px;display:flex;align-items:center;gap:11px">
-                <div class="av" style="width:34px;height:34px;font-size:.85rem">${esc(r.n[0])}</div>
+                ${avatarHtml(esc(r.n), "width:34px;height:34px;font-size:.85rem")}
                 <div><div style="font-size:.86rem;font-weight:600">${esc(r.n)}</div>
                   <div style="font-size:.74rem;color:var(--muted)">${esc(r.loc[L])}${r.hab?' · '+esc(r.hab):''}</div></div>
               </div></div>`).join('')}</div></div>`:''}
@@ -1362,7 +1434,7 @@ window.obrirHab=function(id){
   const p=PISOS.find(x=>x.id===h.pis), e=estatHab(h), oc=h.estat==='ocupada';
   $('#modal').hidden=false; document.body.style.overflow='hidden';
   $('#mC').innerHTML=`
-    <div class="md__gal"><div class="ph ph--${(h.id-1)%5}" style="font-size:2.2rem">${esc(h.codi)}</div></div>
+    <div class="md__gal">${coverHtml(FOTOS.habitacions[h.codi], h.id-1, esc(h.codi), "font-size:2.2rem")}</div>\n    ${galeriaHtml(FOTOS.habitacions[h.codi])}
     <div class="md__c">
       <h2>${esc(h.codi)} · ${esc(p.nom)}</h2>
       <p class="pv__loc">${esc(p.adreca)} · ${esc(p.barri)}</p>
@@ -1436,7 +1508,7 @@ function setIdioma(l){
   $('#rvG').innerHTML=[REV[0],REV[2],REV[5]].map(r=>`
     <article class="rc"><div class="st">${'★'.repeat(r.r)}</div>
       <blockquote>${r.t[l]}</blockquote>
-      <footer><div class="av">${esc(r.n[0])}</div>
+      <footer>${avatarHtml(esc(r.n))}
         <div><cite>${esc(r.n)}</cite><small>${esc(r.loc[l])}</small></div></footer></article>`).join('');
   // FAQs en dues columnes
   const fq=T[l].faqs, mid=Math.ceil(fq.length/2);
