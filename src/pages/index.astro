@@ -121,6 +121,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
   font-size:1.18rem;font-weight:600;flex:none}
 .logo__m{width:34px;height:34px;border-radius:5px;flex:none;background:var(--navy);
   display:grid;place-items:center;color:#fff;font-size:.78rem;letter-spacing:.04em}
+.logo-img{height:32px;width:auto;display:block}
+.logo-img--footer{height:30px}
 .nav{display:flex;align-items:center;gap:28px;margin-left:auto}
 .nav>a{font-size:.85rem;color:var(--ink-2);font-weight:500;transition:color .15s}
 .nav>a:hover{color:var(--navy)}
@@ -491,7 +493,7 @@ img.av{object-fit:cover}
 
 <header class="hd">
   <div class="wrap hd__in">
-    <a class="logo" href="#" onclick="anarLlista();return false"><span class="logo__m">CT</span> CoLiving Terrassa</a>
+    <a class="logo" href="#" onclick="anarLlista();return false"><img src="/logo.svg" alt="CoLiving Terrassa" class="logo-img"></a>
     <nav class="nav">
       <a href="#llistat" onclick="anarLlista()" data-i="nav1"></a>
       <a href="#nosaltres" data-i="nav2"></a>
@@ -686,7 +688,7 @@ img.av{object-fit:cover}
 <footer class="ft">
   <div class="wrap">
     <div class="ft__g">
-      <div><div class="logo" style="margin-bottom:11px"><span class="logo__m">CT</span> CoLiving Terrassa</div>
+      <div><div class="logo" style="margin-bottom:11px"><img src="/logo.svg" alt="CoLiving Terrassa" class="logo-img logo-img--footer"></div>
         <p style="font-size:.85rem;color:var(--muted);max-width:30ch" data-i="ftD"></p></div>
       <div><h4 data-i="ftNav"></h4><ul>
         <li data-i="nav1"></li><li data-i="nav2"></li><li data-i="nav3"></li>
