@@ -36,6 +36,9 @@ for (const codi of Object.keys(HAB_PIS_OF)) {
     .map(f => `/fotos/habitacions/${slug}/${codi}/${encodeURIComponent(f)}`);
 }
 
+const fotosNosaltres = listImgs(path.join(FOTOS_DIR, 'nosaltres'))
+  .map(f => `/fotos/nosaltres/${encodeURIComponent(f)}`);
+
 const fotosResenyes = {};
 for (const f of listImgs(path.join(FOTOS_DIR, 'resenyes'))) {
   const base = f.replace(/\.[^.]+$/, '');
@@ -47,6 +50,7 @@ const FOTOS_JSON = JSON.stringify({
   pisos: fotosPisos,
   habitacions: fotosHab,
   resenyes: fotosResenyes,
+  nosaltres: fotosNosaltres,
   pisSlug: PIS_SLUGS
 });
 ---
@@ -349,8 +353,13 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 @media(max-width:900px){.ab__g{grid-template-columns:1fr;gap:40px}}
 .ab__i{aspect-ratio:4/5;border-radius:var(--r);background:linear-gradient(150deg,#2B4257,#547089);
   display:grid;place-items:center;color:rgba(255,255,255,.9);font-family:var(--serif);
-  font-size:1.4rem;text-align:center;padding:30px;line-height:1.5}
+  font-size:1.4rem;text-align:center;padding:30px;line-height:1.5;position:relative;overflow:hidden}
 @media(max-width:900px){.ab__i{aspect-ratio:16/9}}
+.ab__i--ph{display:block;padding:0}
+.ab__ph{width:100%;height:100%;object-fit:cover;display:block}
+.ab__cap{position:absolute;left:0;right:0;bottom:0;padding:28px 26px 24px;
+  background:linear-gradient(0deg,rgba(10,16,22,.75),rgba(10,16,22,0));
+  color:#fff;font-family:var(--serif);font-size:1.3rem;line-height:1.4;text-align:left}
 .ab h2{font-size:2.2rem;margin-bottom:18px}
 .ab p{color:var(--ink-2);margin-bottom:15px}
 .ab p b{color:var(--ink);font-weight:600}
@@ -588,7 +597,7 @@ img.av{object-fit:cover}
 <!-- ============ QUI SOM ============ -->
 <section class="ab" id="nosaltres">
   <div class="wrap ab__g">
-    <div class="ab__i" data-i="abImg"></div>
+    <div class="ab__i" id="abImg"></div>
     <div>
       <p class="eyebrow" data-i="abEye"></p>
       <h2 data-i="abH"></h2>
@@ -1626,6 +1635,14 @@ function setIdioma(l){
   $('#sHab').textContent=HAB.length;
   // Qui som
   $('#abP').innerHTML=T[l].abP.map(p=>'<p>'+p+'</p>').join('');
+  const fNosaltres=((window.FOTOS||{}).nosaltres||[])[0], abImgEl=$('#abImg');
+  if(fNosaltres){
+    abImgEl.classList.add('ab__i--ph');
+    abImgEl.innerHTML='<img class="ab__ph" src="'+fNosaltres+'" alt="'+t('abH')+'"><span class="ab__cap">'+t('abImg')+'</span>';
+  } else {
+    abImgEl.classList.remove('ab__i--ph');
+    abImgEl.innerHTML=t('abImg');
+  }
   // Ressenyes destacades (una per pis, les tres millors)
   $('#rvG').innerHTML=[REV[0],REV[2],REV[5]].map(r=>`
     <article class="rc"><div class="st">${'★'.repeat(r.r)}</div>
