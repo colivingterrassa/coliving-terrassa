@@ -1106,8 +1106,8 @@ ca:{
  fMsg:"Hi ha res que vulguis afegir? (opcional)",
  fRgpd:"Accepto la política de privacitat i el tractament de les meves dades per gestionar aquesta sol·licitud.",
  fEnviar:"Enviar sol·licitud",fNota:"Et responem en menys de 24 h laborables.",
- eNom:"Escriu el teu nom complet.",eEmail:"Revisa el teu correu electrònic.",eRgpd:"Has d'acceptar la política de privacitat.",
- okT:"Sol·licitud enviada",okP:"Et contactem en menys de 24 h laborables.",okD:"(Demo: encara no s'envia enlloc)",
+ eNom:"Escriu el teu nom complet.",eEmail:"Revisa el teu correu electrònic.",eRgpd:"Has d'acceptar la política de privacitat.",eEnviament:"Hi ha hagut un error en enviar el formulari. Torna-ho a provar.",
+ okT:"Sol·licitud enviada",okP:"Et contactem en menys de 24 h laborables.",
  abEye:"Qui som",abImg:"Espais que cuidem<br>al detall",
  abH:"Cuidem la comunitat, no només les parets",
  abP:["CoLiving Terrassa neix d'una idea senzilla: <b>llogar una habitació no hauria de significar renunciar a sentir-se a casa</b>. Gestionem pisos compartits a Terrassa per a estudiants i professionals que busquen un espai propi ben condicionat, sense renunciar a la vida en comú.",
@@ -1195,8 +1195,8 @@ es:{
  fMsg:"¿Hay algo que quieras añadir? (opcional)",
  fRgpd:"Acepto la política de privacidad y el tratamiento de mis datos para gestionar esta solicitud.",
  fEnviar:"Enviar solicitud",fNota:"Te respondemos en menos de 24 h laborables.",
- eNom:"Escribe tu nombre completo.",eEmail:"Revisa tu correo electrónico.",eRgpd:"Debes aceptar la política de privacidad.",
- okT:"Solicitud enviada",okP:"Te contactamos en menos de 24 h laborables.",okD:"(Demo: todavía no se envía a ningún sitio)",
+ eNom:"Escribe tu nombre completo.",eEmail:"Revisa tu correo electrónico.",eRgpd:"Debes aceptar la política de privacidad.",eEnviament:"Ha habido un error al enviar el formulario. Vuelve a intentarlo.",
+ okT:"Solicitud enviada",okP:"Te contactamos en menos de 24 h laborables.",
  abEye:"Quiénes somos",abImg:"Espacios que cuidamos<br>al detalle",
  abH:"Cuidamos la comunidad, no solo las paredes",
  abP:["CoLiving Terrassa nace de una idea sencilla: <b>alquilar una habitación no debería significar renunciar a sentirse en casa</b>. Gestionamos pisos compartidos en Terrassa para estudiantes y profesionales que buscan un espacio propio bien acondicionado, sin renunciar a la vida en común.",
@@ -1284,8 +1284,8 @@ en:{
  fMsg:"Anything you would like to add? (optional)",
  fRgpd:"I accept the privacy policy and the processing of my data to handle this enquiry.",
  fEnviar:"Send enquiry",fNota:"We reply within 24 working hours.",
- eNom:"Please enter your full name.",eEmail:"Please check your email address.",eRgpd:"You must accept the privacy policy.",
- okT:"Enquiry sent",okP:"We will contact you within 24 working hours.",okD:"(Demo: not actually sent anywhere yet)",
+ eNom:"Please enter your full name.",eEmail:"Please check your email address.",eRgpd:"You must accept the privacy policy.",eEnviament:"There was an error sending the form. Please try again.",
+ okT:"Enquiry sent",okP:"We will contact you within 24 working hours.",
  abEye:"About us",abImg:"Spaces we look<br>after in detail",
  abH:"We look after the community, not just the walls",
  abP:["CoLiving Terrassa was born from a simple idea: <b>renting a room should not mean giving up the feeling of being at home</b>. We manage shared flats in Terrassa for students and professionals who want a well-appointed space of their own without losing shared living.",
@@ -1573,10 +1573,29 @@ window.obrirHab=function(id){
     if((d.get('nom')||'').trim().length<2) return sErr(er,t('eNom'));
     if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(d.get('email')||'')) return sErr(er,t('eEmail'));
     if(!d.get('rgpd')) return sErr(er,t('eRgpd'));
-    ev.target.outerHTML='<div class="okb"><strong>'+t('okT')+'</strong>'+t('okP')+
-      '<br><small>'+t('okD')+'</small></div>';
+    const btn=ev.target.querySelector('button[type=submit]'); if(btn) btn.disabled=true;
+    enviaFormulari({
+      subject:'Nueva solicitud de información — '+h.codi+' ('+p.nom+')',
+      from_name:d.get('nom'), nom:d.get('nom'), email:d.get('email'), telefon:d.get('tel')||'',
+      missatge:d.get('msg')||'', habitacio:h.codi, pis:p.nom, formulari:'Solicitud de información (inquilino)'
+    }).then(ok=>{
+      if(ok){
+        ev.target.outerHTML='<div class="okb"><strong>'+t('okT')+'</strong>'+t('okP')+'</div>';
+      } else {
+        if(btn) btn.disabled=false;
+        sErr(er,t('eEnviament'));
+      }
+    });
   };
 };
+const WEB3FORMS_KEY='f3ffbb82-ea8c-4551-915d-ad0a1b3fcf87';
+function enviaFormulari(payload){
+  return fetch('https://api.web3forms.com/submit',{
+    method:'POST',
+    headers:{'Content-Type':'application/json',Accept:'application/json'},
+    body:JSON.stringify(Object.assign({access_key:WEB3FORMS_KEY},payload))
+  }).then(r=>r.json()).then(j=>!!j.success).catch(()=>false);
+}
 const sErr=(el,m)=>{el.textContent=m;el.hidden=false};
 const tanca=()=>{$('#modal').hidden=true;document.body.style.overflow=''};
 
@@ -1649,8 +1668,20 @@ $('#fProp').onsubmit=e=>{
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(d.get('email')||'')) return sErr(er,t('eEmail'));
   if(!(d.get('zona')||'').trim()) return sErr(er,t('eZona'));
   if(!d.get('rgpd')) return sErr(er,t('eRgpd'));
-  e.target.outerHTML='<div class="okb"><strong>'+t('okPT')+'</strong>'+t('okPP')+
-    '<br><small>'+t('okD')+'</small></div>';
+  const btn=e.target.querySelector('button[type=submit]'); if(btn) btn.disabled=true;
+  enviaFormulari({
+    subject:'Nuevo propietario interesado — '+d.get('zona'),
+    from_name:d.get('nom'), nom:d.get('nom'), email:d.get('email'), telefon:d.get('tel')||'',
+    zona:d.get('zona'), habitacions:d.get('nhab')||'', estat:d.get('estat')||'',
+    missatge:d.get('msg')||'', formulari:'Formulario de propietarios'
+  }).then(ok=>{
+    if(ok){
+      e.target.outerHTML='<div class="okb"><strong>'+t('okPT')+'</strong>'+t('okPP')+'</div>';
+    } else {
+      if(btn) btn.disabled=false;
+      sErr(er,t('eEnviament'));
+    }
+  });
 };
 
 $('#lang').onclick=e=>{const b=e.target.closest('button[data-l]');if(b)setIdioma(b.dataset.l)};
