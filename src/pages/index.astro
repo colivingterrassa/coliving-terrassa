@@ -1766,14 +1766,15 @@ document.onkeydown=e=>{if(e.key==='Escape'){if(!$('#modal').hidden)tanca();else 
 function initMapa(){
   const el=document.getElementById('mapaLeaflet'); if(!el) return;
   try{
-    if(typeof L==='undefined') throw new Error('Leaflet no disponible');
-    const map=L.map(el,{scrollWheelZoom:false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    var LL=window.L; // 'L' ja s'usa a la pagina per l'idioma actual; Leaflet viu a window.L
+    if(typeof LL==='undefined' || typeof LL.map!=='function') throw new Error('Leaflet no disponible');
+    const map=LL.map(el,{scrollWheelZoom:false});
+    LL.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom:19, attribution:'&copy; OpenStreetMap'
     }).addTo(map);
-    const markers=PISOS.map(p=>L.marker([p.lat,p.lng]).addTo(map)
+    const markers=PISOS.map(p=>LL.marker([p.lat,p.lng]).addTo(map)
       .bindPopup('<div class="lp"><b>'+esc(p.nom)+'</b><small>'+esc(p.adreca)+'</small></div>'));
-    map.fitBounds(L.featureGroup(markers).getBounds().pad(0.25));
+    map.fitBounds(LL.featureGroup(markers).getBounds().pad(0.25));
   }catch(err){
     el.innerHTML='<div class="mapa__fb">'+PISOS.map(p=>
       '<a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.adreca+', Terrassa')+'" target="_blank" rel="noopener"><b>'+esc(p.nom)+'</b><small>'+esc(p.adreca)+'</small></a>'
