@@ -38,7 +38,8 @@ for (const codi of Object.keys(HAB_PIS_OF)) {
 
 const fotosResenyes = {};
 for (const f of listImgs(path.join(FOTOS_DIR, 'resenyes'))) {
-  const key = f.replace(/\.[^.]+$/, '').toLowerCase();
+  const base = f.replace(/\.[^.]+$/, '');
+  const key = base.trim().split(/\s+/)[0].toLowerCase();
   fotosResenyes[key] = `/fotos/resenyes/${encodeURIComponent(f)}`;
 }
 
