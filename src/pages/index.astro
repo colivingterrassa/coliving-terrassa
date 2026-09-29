@@ -390,6 +390,18 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 .mapa h2{font-size:2rem;margin-bottom:22px}
 .mapa__box{height:420px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--bg-2)}
 @media(max-width:640px){.mapa__box{height:320px}}
+.mapa__pin{background:transparent;border:none}
+.mapa__price{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;padding:7px 12px;border-radius:999px;font-family:var(--sans);
+  font-weight:700;font-size:.78rem;box-shadow:var(--sh-2);cursor:pointer;
+  transform:translate(-50%,-100%);border:2px solid #fff;transition:transform .15s}
+.mapa__price:hover{transform:translate(-50%,-100%) scale(1.06)}
+.mapa__price:after{content:'';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
+  width:0;height:0;border-width:6px 5px 0;border-style:solid;border-color:inherit;
+  border-right-color:transparent;border-left-color:transparent}
+.mapa__price--ok{color:#fff;background:var(--ok);border-color:var(--ok)}
+.mapa__price--soon{color:#fff;background:var(--warn);border-color:var(--warn)}
+.mapa__price--off{color:#fff;background:var(--off);border-color:var(--off)}
 .lp{font-family:var(--sans);line-height:1.4}
 .lp b{font-family:var(--serif);display:block;margin-bottom:2px;font-size:.95rem;color:var(--ink)}
 .lp small{color:var(--muted);font-size:.8rem}
@@ -2028,8 +2040,19 @@ function initMapa(){
     LL.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom:19, attribution:'&copy; OpenStreetMap'
     }).addTo(map);
-    const markers=PISOS.map(p=>LL.marker([p.lat,p.lng]).addTo(map)
-      .bindPopup('<div class="lp"><b>'+esc(p.nom)+'</b><small>'+esc(p.adreca)+'</small></div>'));
+    const markers=PISOS.map(p=>{
+      const pd=preuDes(p.id), e=estatPis(p.id);
+      const label=pd?(t('desDe')+' '+pd+' €'):t('completa');
+      const icon=LL.divIcon({
+        className:'mapa__pin',
+        html:'<div class="mapa__price mapa__price--'+e.c+'">'+esc(label)+'</div>',
+        iconSize:[110,34], iconAnchor:[55,34]
+      });
+      const m=LL.marker([p.lat,p.lng],{icon}).addTo(map);
+      m.bindTooltip(esc(p.nom),{direction:'top',offset:[0,-30]});
+      m.on('click',()=>obrirPis(p.id));
+      return m;
+    });
     map.fitBounds(LL.featureGroup(markers).getBounds().pad(0.25));
   }catch(err){
     el.innerHTML='<div class="mapa__fb">'+PISOS.map(p=>
