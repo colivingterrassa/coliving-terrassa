@@ -540,6 +540,36 @@ img.av{object-fit:cover}
 .lb__nav:hover,.lb__x:hover{background:rgba(255,255,255,.28)}
 .lb__ct{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.78);font-size:.8rem}
 @media(max-width:640px){.lb__nav{width:38px;height:38px;font-size:1.3rem}.lb__prev{left:8px}.lb__next{right:8px}}
+
+/* ---------- MICROINTERACCIONS (navegabilitat) ---------- */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
+select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.nav>a.is-active{color:var(--navy);font-weight:600}
+
+.totop{position:fixed;right:20px;bottom:24px;width:44px;height:44px;border-radius:50%;
+  background:var(--navy);color:#fff;font-size:1.2rem;border:none;box-shadow:var(--sh-2);
+  z-index:70;display:grid;place-items:center;cursor:pointer;
+  opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s}
+.totop.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.totop:hover{background:var(--navy-2)}
+@media(max-width:640px){.totop{right:14px;bottom:14px;width:40px;height:40px}}
+
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#vPis:not([hidden]),#vLlista:not([hidden]){animation:viewIn .25s ease}
+
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:cardIn .32s ease backwards}
+
+@keyframes mdBdIn{from{opacity:0}to{opacity:1}}
+@keyframes mdBxIn{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.md:not([hidden]) .md__bd{animation:mdBdIn .18s ease}
+.md:not([hidden]) .md__bx{animation:mdBxIn .22s ease}
+
+@media (prefers-reduced-motion: reduce){
+  .totop,#vPis,#vLlista,.card,.md__bd,.md__bx{animation:none!important;transition:none!important}
+}
 </style>
 </head>
 <body>
@@ -777,6 +807,8 @@ img.av{object-fit:cover}
   <button class="lb__nav lb__next" onclick="lbNext(event)" aria-label="Seguent">›</button>
   <div class="lb__ct" id="lbCt"></div>
 </div>
+
+<button class="totop" id="toTop" aria-label="Tornar amunt" type="button">↑</button>
 
 <script is:inline set:html={`window.FOTOS=${FOTOS_JSON};
 function coverHtml(kind, key, seed, label, style, clickable){
@@ -1582,7 +1614,7 @@ en:{
 /* =====================================================================
    3. ESTAT I UTILITATS
    ===================================================================== */
-let L='ca', VISTA='list', PIS_OBERT=null;
+let L='ca', VISTA='list', PIS_OBERT=null, LLISTA_SCROLL=0;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const t=k=>T[L][k]||k;
@@ -1676,7 +1708,7 @@ function aplica(){
   $('#grid').hidden  = VISTA==='map';
   $('#grid').innerHTML=rows.map((p,i)=>{
     const e=estatPis(p.id), nl=lliuresDe(p.id).length, pd=preuDes(p.id);
-    return `<button class="card ${nl?'':'card--off'}" data-pis="${p.id}">
+    return `<button class="card ${nl?'':'card--off'}" data-pis="${p.id}" style="animation-delay:${Math.min(i,8)*35}ms">
       <div class="card__m">${coverHtml('pisos', FOTOS.pisSlug[p.id], i, esc(p.nom))}
         <span class="bdg bdg--${e.c}">${e.t}</span>
         <span class="cnt">${nl} ${nl===1?t('hab'):t('habs')} ${nl===1?t('lliure'):t('lliures')}</span></div>
@@ -1791,6 +1823,7 @@ function obrirPis(id){
     </div>`;
 
   $$('.room[data-hab]').forEach(b=>b.onclick=()=>obrirHab(+b.dataset.hab));
+  LLISTA_SCROLL = window.scrollY;
   $('#vLlista').hidden=true; $('#vPis').hidden=false;
   window.scrollTo({top:0,behavior:'instant'});
   const ff=filtres(); ff.pis=String(id); setF(ff);
@@ -1800,7 +1833,7 @@ window.anarLlista=function(){
   PIS_OBERT=null;
   $('#vPis').hidden=true; $('#vLlista').hidden=false;
   const f=filtres(); f.pis=''; setF(f); aplica();
-  window.scrollTo({top:0,behavior:'instant'});
+  window.scrollTo({top:LLISTA_SCROLL||0,behavior:'instant'});
 };
 
 /* =====================================================================
@@ -1854,7 +1887,9 @@ window.obrirHab=function(id){
       missatge:d.get('msg')||'', habitacio:h.codi, pis:p.nom, formulari:'Solicitud de información (inquilino)'
     }).then(ok=>{
       if(ok){
+        const _pL=ev.target.parentNode;
         ev.target.outerHTML='<div class="okb"><strong>'+t('okT')+'</strong>'+t('okP')+'</div>';
+        const _okL=_pL.querySelector('.okb'); if(_okL) _okL.scrollIntoView({behavior:'smooth',block:'center'});
       } else {
         if(btn) btn.disabled=false;
         sErr(er,t('eEnviament'));
@@ -1958,7 +1993,9 @@ $('#fProp').onsubmit=e=>{
     missatge:d.get('msg')||'', formulari:'Formulario de propietarios'
   }).then(ok=>{
     if(ok){
+      const _pP=e.target.parentNode;
       e.target.outerHTML='<div class="okb"><strong>'+t('okPT')+'</strong>'+t('okPP')+'</div>';
+      const _okP=_pP.querySelector('.okb'); if(_okP) _okP.scrollIntoView({behavior:'smooth',block:'center'});
     } else {
       if(btn) btn.disabled=false;
       sErr(er,t('eEnviament'));
@@ -2004,6 +2041,34 @@ setIdioma('ca');
 initMapa();
 const fIni=filtres();
 if(fIni.pis && PISOS.some(p=>p.id===+fIni.pis)) obrirPis(+fIni.pis);
+
+/* ---------- Scroll-spy al menu superior ---------- */
+(function(){
+  const navLinks=Array.from(document.querySelectorAll('.nav>a[href^="#"]'));
+  const targets=navLinks.map(a=>({a,id:a.getAttribute('href').slice(1)}))
+    .filter(x=>document.getElementById(x.id));
+  if(!targets.length) return;
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        const hit=targets.find(x=>x.id===en.target.id);
+        if(hit){ navLinks.forEach(a=>a.classList.remove('is-active')); hit.a.classList.add('is-active'); }
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+  targets.forEach(x=>obs.observe(document.getElementById(x.id)));
+})();
+
+/* ---------- Boto flotant "tornar amunt" ---------- */
+(function(){
+  const btn=document.getElementById('toTop'); if(!btn) return;
+  let ticking=false;
+  document.addEventListener('scroll',function(){
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(function(){ btn.classList.toggle('show', window.scrollY>600); ticking=false; });
+  },{passive:true});
+  btn.onclick=function(){ window.scrollTo({top:0,behavior:'smooth'}); };
+})();
 </script>
 </body>
 </html>
