@@ -2038,7 +2038,7 @@ function initMapa(){
     }).addTo(map);
     const markers=PISOS.map(p=>{
       const pm=preuMin(p.id);
-      const label=pm?(t('desDe')+' '+pm+' €'):t('completa');
+      const label=pm?(pm+' €'):t('completa');
       const icon=LL.divIcon({
         className:'mapa__pin',
         html:'<div class="mapa__price">'+esc(label)+'</div>',
