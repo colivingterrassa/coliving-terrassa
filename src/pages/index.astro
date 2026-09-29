@@ -194,9 +194,24 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 /* ---------- FILTRES ---------- */
 .flt{position:sticky;top:70px;z-index:50;background:rgba(255,255,255,.97);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:44px}
-.flt__in{display:flex;align-items:center;gap:14px;height:64px}
-.chips{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
+.flt__in{display:flex;flex-direction:column;padding:12px 0}
+.flt__bar{display:flex;align-items:center;gap:12px;min-height:40px}
+.fltbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+  padding:9px 16px;border-radius:99px;font-size:.83rem;font-weight:600;color:var(--ink);
+  background:#fff;cursor:pointer;transition:.16s;font-family:var(--sans)}
+.fltbtn:hover{border-color:var(--muted);background:var(--bg-2)}
+.fltbtn[aria-expanded="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.fltbtn b{background:var(--accent);color:#fff;border-radius:99px;font-size:.7rem;font-weight:700;
+  min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.fltbtn[aria-expanded="true"] b{background:#fff;color:var(--navy)}
+#chips[hidden]{display:none}
+.chips{display:flex;flex-direction:column;gap:14px;padding:16px 2px 4px}
+.fgrp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.fgrp__t{font-family:var(--sans);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:700;white-space:nowrap;min-width:120px}
+.fgrp__c{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:640px){.fgrp{flex-direction:column;align-items:flex-start;gap:6px}
+  .fgrp__t{min-width:0}}
 .chip{flex:none;border:1px solid var(--line);padding:8px 15px;font-size:.81rem;
   white-space:nowrap;color:var(--ink-2);border-radius:99px;transition:.16s;font-weight:500}
 .chip:hover{border-color:var(--muted);background:var(--bg-2)}
@@ -630,20 +645,61 @@ select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-vi
 
   <div class="flt">
     <div class="wrap flt__in">
-      <div class="chips" id="chips">
-        <button class="chip" data-f="preu"  data-v="500"        aria-pressed="false" data-i="chPreu"></button>
-        <button class="chip" data-f="bany"  data-v="privat"     aria-pressed="false" data-i="chBanyP"></button>
-        <button class="chip" data-f="bany"  data-v="compartit"  aria-pressed="false" data-i="chBanyC"></button>
-        <button class="chip" data-f="tipus" data-v="individual" aria-pressed="false" data-i="chInd"></button>
-        <button class="chip" data-f="tipus" data-v="doble"      aria-pressed="false" data-i="chDob"></button>
-        <select class="chip chip--sel" id="fComp" aria-label="companys">
-          <option value=""      data-i="chCompAll"></option>
-          <option value="petit" data-i="chComp1"></option>
-          <option value="mitja" data-i="chComp2"></option>
-          <option value="gran"  data-i="chComp3"></option>
-        </select>
-        <button class="chip" data-f="disp"  data-v="ara"        aria-pressed="false" data-i="chDisp"></button>
+      <div class="flt__bar">
+        <button class="fltbtn" id="fltToggle" type="button" aria-expanded="false" aria-controls="chips">
+          <span data-i="btFiltres"></span><b id="fltCount" hidden></b>
+        </button>
         <button class="chip chip--rst" id="bRst" hidden data-i="chRst"></button>
+      </div>
+      <div class="chips" id="chips" hidden>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpPreu"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="preu" data-v="h350"    aria-pressed="false" data-i="chPreu1"></button>
+            <button class="chip" data-f="preu" data-v="350-400" aria-pressed="false" data-i="chPreu2"></button>
+            <button class="chip" data-f="preu" data-v="400plus" aria-pressed="false" data-i="chPreu3"></button>
+          </div>
+        </div>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpZona"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="barri" data-v="Centre"      aria-pressed="false" data-i="chZ1"></button>
+            <button class="chip" data-f="barri" data-v="Sant Pere"   aria-pressed="false" data-i="chZ2"></button>
+            <button class="chip" data-f="barri" data-v="Ca n'Aurell" aria-pressed="false" data-i="chZ3"></button>
+            <button class="chip" data-f="barri" data-v="Vallparadís" aria-pressed="false" data-i="chZ4"></button>
+            <button class="chip" data-f="barri" data-v="Can Palet"   aria-pressed="false" data-i="chZ5"></button>
+          </div>
+        </div>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpDisp"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="disp" data-v="disponible" aria-pressed="false" data-i="chDispA"></button>
+            <button class="chip" data-f="disp" data-v="propera"    aria-pressed="false" data-i="chDispB"></button>
+            <button class="chip" data-f="disp" data-v="ocupada"    aria-pressed="false" data-i="chDispC"></button>
+          </div>
+        </div>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpBany"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="bany" data-v="privat"    aria-pressed="false" data-i="chBanyP"></button>
+            <button class="chip" data-f="bany" data-v="compartit" aria-pressed="false" data-i="chBanyC"></button>
+          </div>
+        </div>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpHab"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="tipus" data-v="doble"      aria-pressed="false" data-i="chDob"></button>
+            <button class="chip" data-f="tipus" data-v="individual" aria-pressed="false" data-i="chInd"></button>
+          </div>
+        </div>
+        <div class="fgrp">
+          <span class="fgrp__t" data-i="grpComp"></span>
+          <div class="fgrp__c">
+            <button class="chip" data-f="comp" data-v="petit" aria-pressed="false" data-i="chComp1"></button>
+            <button class="chip" data-f="comp" data-v="mitja" aria-pressed="false" data-i="chComp2"></button>
+            <button class="chip" data-f="comp" data-v="gran"  aria-pressed="false" data-i="chComp3"></button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1385,8 +1441,10 @@ ca:{
  heroP:"Habitacions en pisos compartits de qualitat per a estudiants i professionals, gestionats directament per nosaltres.",
  stPisos:"Pisos gestionats",stHab:"Habitacions",stVal:"Valoració mitjana",
  lbBarri:"Barri",lbData:"Data d'entrada",btBuscar:"Cercar",totBarri:"Tot Terrassa",
- chPreu:"Fins a 500 €",chBanyP:"Bany privat",chBanyC:"Bany compartit",chInd:"Individual",
- chDob:"Doble",chDisp:"Disponible ara",chRst:"Esborrar filtres",chRst2:"Esborrar filtres",
+ chPreu1:"Fins a 350 €",chPreu2:"350–400 €",chPreu3:"Més de 400 €",chBanyP:"Bany privat",chBanyC:"Bany compartit",chInd:"Individual",
+ chDob:"Doble",chDispA:"Disponible",chDispB:"Pròximament",chDispC:"Ocupada",chRst:"Esborrar filtres",chRst2:"Esborrar filtres",
+ grpPreu:"Preu",grpZona:"Zona",grpDisp:"Disponibilitat",grpBany:"Bany",grpHab:"Habitació",grpComp:"Companys de pis",btFiltres:"Filtres",
+ chZ1:"Centre",chZ2:"Sant Pere",chZ3:"Ca n'Aurell",chZ4:"Vallparadís",chZ5:"Can Palet",
  chCompAll:"Companys de pis",chComp1:"Fins a 2 companys",chComp2:"3–4 companys",chComp3:"5 o més companys",
  companys:"companys de pis",company:"company de pis",veureMapa:"Veure al mapa",
  entorn:"El barri i el seu entorn",envNota:"Temps aproximats a peu des del pis.",
@@ -1474,8 +1532,10 @@ es:{
  heroP:"Habitaciones en pisos compartidos de calidad para estudiantes y profesionales, gestionados directamente por nosotros.",
  stPisos:"Pisos gestionados",stHab:"Habitaciones",stVal:"Valoración media",
  lbBarri:"Barrio",lbData:"Fecha de entrada",btBuscar:"Buscar",totBarri:"Todo Terrassa",
- chPreu:"Hasta 500 €",chBanyP:"Baño privado",chBanyC:"Baño compartido",chInd:"Individual",
- chDob:"Doble",chDisp:"Disponible ahora",chRst:"Borrar filtros",chRst2:"Borrar filtros",
+ chPreu1:"Hasta 350 €",chPreu2:"350–400 €",chPreu3:"Más de 400 €",chBanyP:"Baño privado",chBanyC:"Baño compartido",chInd:"Individual",
+ chDob:"Doble",chDispA:"Disponible",chDispB:"Próximamente",chDispC:"Ocupada",chRst:"Borrar filtros",chRst2:"Borrar filtros",
+ grpPreu:"Precio",grpZona:"Zona",grpDisp:"Disponibilidad",grpBany:"Baño",grpHab:"Habitación",grpComp:"Compañeros de piso",btFiltres:"Filtros",
+ chZ1:"Centre",chZ2:"Sant Pere",chZ3:"Ca n'Aurell",chZ4:"Vallparadís",chZ5:"Can Palet",
  chCompAll:"Compañeros de piso",chComp1:"Hasta 2 compañeros",chComp2:"3–4 compañeros",chComp3:"5 o más compañeros",
  companys:"compañeros de piso",company:"compañero de piso",veureMapa:"Ver en el mapa",
  entorn:"El barrio y su entorno",envNota:"Tiempos aproximados a pie desde el piso.",
@@ -1563,8 +1623,10 @@ en:{
  heroP:"Quality rooms in shared flats for students and professionals, managed directly by us.",
  stPisos:"Managed flats",stHab:"Rooms",stVal:"Average rating",
  lbBarri:"Area",lbData:"Move-in date",btBuscar:"Search",totBarri:"All Terrassa",
- chPreu:"Up to €500",chBanyP:"Private bathroom",chBanyC:"Shared bathroom",chInd:"Single",
- chDob:"Double",chDisp:"Available now",chRst:"Clear filters",chRst2:"Clear filters",
+ chPreu1:"Up to €350",chPreu2:"€350–400",chPreu3:"Over €400",chBanyP:"Private bathroom",chBanyC:"Shared bathroom",chInd:"Single",
+ chDob:"Double",chDispA:"Available",chDispB:"Coming soon",chDispC:"Occupied",chRst:"Clear filters",chRst2:"Clear filters",
+ grpPreu:"Price",grpZona:"Area",grpDisp:"Availability",grpBany:"Bathroom",grpHab:"Room type",grpComp:"Flatmates",btFiltres:"Filters",
+ chZ1:"Centre",chZ2:"Sant Pere",chZ3:"Ca n'Aurell",chZ4:"Vallparadís",chZ5:"Can Palet",
  chCompAll:"Flatmates",chComp1:"Up to 2 flatmates",chComp2:"3–4 flatmates",chComp3:"5 or more flatmates",
  companys:"flatmates",company:"flatmate",veureMapa:"View on map",
  entorn:"The neighbourhood",envNota:"Approximate walking times from the flat.",
@@ -1671,12 +1733,25 @@ function passaComp(nhab,v){
   if(v==='mitja') return nhab>=4&&nhab<=5;
   return nhab>=6;
 }
+function passaPreu(preu,v){
+  if(!v) return true;
+  if(v==='h350') return preu<=350;
+  if(v==='350-400') return preu>350&&preu<=400;
+  return preu>400;
+}
+function passaDisp(h,v){
+  if(!v) return true;
+  const c=estatHab(h).c;
+  if(v==='disponible') return c==='ok';
+  if(v==='propera') return c==='soon';
+  return c==='off';
+}
 function habPassa(h,f){
   const pis=PISOS.find(p=>p.id===h.pis);
   return (!f.barri||pis.barri===f.barri)&&(!f.bany||h.bany===f.bany)&&
-         (!f.tipus||h.tipus===f.tipus)&&(!f.preu||h.preu<=+f.preu)&&
+         (!f.tipus||h.tipus===f.tipus)&&passaPreu(h.preu,f.preu)&&
          passaComp(pis.nhab,f.comp)&&
-         (!f.disp||h.estat!=='ocupada')&&
+         passaDisp(h,f.disp)&&
          (!f.data||(h.estat!=='ocupada'&&(!h.des||h.des<=f.data)));
 }
 function pisosFiltrats(f){
@@ -1698,11 +1773,10 @@ function pisosFiltrats(f){
 function pintaUI(f){
   $('#fBarri').value=f.barri; $('#fData').value=f.data; $('#sort').value=f.sort;
   $$('.chip[data-f]').forEach(c=>{
-    const k=c.dataset.f==='preu'?'preu':c.dataset.f;
-    c.setAttribute('aria-pressed', f[k]===c.dataset.v?'true':'false');
+    c.setAttribute('aria-pressed', f[c.dataset.f]===c.dataset.v?'true':'false');
   });
-  $('#fComp').value=f.comp;
-  $('#fComp').classList.toggle('on', !!f.comp);
+  const nAct=['barri','preu','bany','tipus','disp','comp'].filter(k=>f[k]).length;
+  $('#fltCount').hidden=!nAct; $('#fltCount').textContent=nAct;
   $('#bRst').hidden=!(f.barri||f.data||f.preu||f.bany||f.tipus||f.disp||f.comp);
 }
 
@@ -2015,10 +2089,12 @@ $('#lang').onclick=e=>{const b=e.target.closest('button[data-l]');if(b)setIdioma
 $('#fCerca').onsubmit=e=>{e.preventDefault();const f=filtres();
   f.barri=$('#fBarri').value;f.data=$('#fData').value;setF(f);
   if(PIS_OBERT)anarLlista();else aplica()};
-$('#fComp').onchange=()=>{const f=filtres();f.comp=$('#fComp').value;setF(f);
-  if(PIS_OBERT)anarLlista();else aplica()};
+$('#fltToggle').onclick=()=>{
+  const p=$('#chips'), open=p.hidden;
+  p.hidden=!open; $('#fltToggle').setAttribute('aria-expanded', open?'true':'false');
+};
 $('#chips').onclick=e=>{const c=e.target.closest('.chip[data-f]');if(!c)return;
-  const f=filtres(),k=c.dataset.f==='preu'?'preu':c.dataset.f;
+  const f=filtres(),k=c.dataset.f;
   f[k]=f[k]===c.dataset.v?'':c.dataset.v;setF(f);aplica()};
 $('#bRst').onclick=()=>{const f=filtres();
   history.replaceState(null,'',location.pathname);aplica()};
