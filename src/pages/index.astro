@@ -392,16 +392,11 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 @media(max-width:640px){.mapa__box{height:320px}}
 .mapa__pin{background:transparent;border:none}
 .mapa__price{position:relative;display:inline-flex;align-items:center;justify-content:center;
-  white-space:nowrap;padding:7px 12px;border-radius:999px;font-family:var(--sans);
-  font-weight:700;font-size:.78rem;box-shadow:var(--sh-2);cursor:pointer;
-  transform:translate(-50%,-100%);border:2px solid #fff;transition:transform .15s}
-.mapa__price:hover{transform:translate(-50%,-100%) scale(1.06)}
-.mapa__price:after{content:'';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
-  width:0;height:0;border-width:6px 5px 0;border-style:solid;border-color:inherit;
-  border-right-color:transparent;border-left-color:transparent}
-.mapa__price--ok{color:#fff;background:var(--ok);border-color:var(--ok)}
-.mapa__price--soon{color:#fff;background:var(--warn);border-color:var(--warn)}
-.mapa__price--off{color:#fff;background:var(--off);border-color:var(--off)}
+  white-space:nowrap;padding:6px 12px;border-radius:999px;font-family:var(--sans);
+  font-weight:700;font-size:.8rem;color:var(--ink);background:#fff;
+  border:1px solid var(--line);box-shadow:0 5px 14px rgba(15,23,42,.12);cursor:pointer;
+  transform:translate(-50%,-100%);transition:transform .15s,background .15s,color .15s}
+.mapa__price:hover{transform:translate(-50%,-100%) scale(1.07);background:var(--navy);color:#fff;border-color:var(--navy)}
 .lp{font-family:var(--sans);line-height:1.4}
 .lp b{font-family:var(--serif);display:block;margin-bottom:2px;font-size:.95rem;color:var(--ink)}
 .lp small{color:var(--muted);font-size:.8rem}
@@ -1636,6 +1631,7 @@ const HOY=new Date().toISOString().slice(0,10);
 const habsDe=id=>HAB.filter(h=>h.pis===id);
 const lliuresDe=id=>habsDe(id).filter(h=>h.estat!=='ocupada');
 const preuDes=id=>{const l=lliuresDe(id);return l.length?Math.min(...l.map(h=>h.preu)):null};
+const preuMin=id=>{const l=habsDe(id).map(h=>h.preu);return l.length?Math.min(...l):null};
 const revsDe=id=>REV.filter(r=>r.pis===id);
 
 function estatHab(h){
@@ -2036,16 +2032,16 @@ function initMapa(){
   try{
     var LL=window.L; // 'L' ja s'usa a la pagina per l'idioma actual; Leaflet viu a window.L
     if(typeof LL==='undefined' || typeof LL.map!=='function') throw new Error('Leaflet no disponible');
-    const map=LL.map(el,{scrollWheelZoom:false});
+    const map=LL.map(el,{scrollWheelZoom:true});
     LL.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom:19, attribution:'&copy; OpenStreetMap'
     }).addTo(map);
     const markers=PISOS.map(p=>{
-      const pd=preuDes(p.id), e=estatPis(p.id);
-      const label=pd?(t('desDe')+' '+pd+' €'):t('completa');
+      const pm=preuMin(p.id);
+      const label=pm?(t('desDe')+' '+pm+' €'):t('completa');
       const icon=LL.divIcon({
         className:'mapa__pin',
-        html:'<div class="mapa__price mapa__price--'+e.c+'">'+esc(label)+'</div>',
+        html:'<div class="mapa__price">'+esc(label)+'</div>',
         iconSize:[110,34], iconAnchor:[55,34]
       });
       const m=LL.marker([p.lat,p.lng],{icon}).addTo(map);
