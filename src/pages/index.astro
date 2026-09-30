@@ -2138,10 +2138,10 @@ function initMapa(){
       const icon=LL.divIcon({
         className:'mapa__pin',
         html:'<div class="mapa__price">'+esc(label)+'</div>',
-        iconSize:[110,34], iconAnchor:[55,34]
+        iconSize:[0,0], iconAnchor:[0,0]
       });
       const m=LL.marker([p.lat,p.lng],{icon}).addTo(map);
-      m.bindTooltip(esc(p.nom),{direction:'top',offset:[0,-30]});
+      m.bindTooltip(esc(p.nom),{direction:'top',offset:[0,-42]});
       m.on('click',()=>obrirPis(p.id));
       return m;
     });
