@@ -1778,7 +1778,10 @@ function pintaUI(f){
     c.setAttribute('aria-pressed', f[c.dataset.f]===c.dataset.v?'true':'false');
   });
   $$('.fgrp2[data-grp]').forEach(g=>{
-    g.querySelector('.fbtn').classList.toggle('active', !!f[g.dataset.grp]);
+    const btn=g.querySelector('.fbtn'), on=!!f[g.dataset.grp];
+    btn.classList.toggle('active', on);
+    const sel=on?g.querySelector('.chip[aria-pressed="true"]'):null;
+    btn.textContent = sel ? sel.textContent : t(btn.dataset.i);
   });
   $('#bRst').hidden=!(f.barri||f.data||f.preu||f.bany||f.tipus||f.disp||f.comp);
 }
