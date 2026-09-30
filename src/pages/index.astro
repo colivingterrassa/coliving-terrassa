@@ -194,29 +194,36 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 /* ---------- FILTRES ---------- */
 .flt{position:sticky;top:70px;z-index:50;background:rgba(255,255,255,.97);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:44px}
-.flt__in{display:flex;flex-direction:column;padding:12px 0}
-.flt__bar{display:flex;align-items:center;gap:12px;min-height:40px}
-.fltbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
-  padding:9px 16px;border-radius:99px;font-size:.83rem;font-weight:600;color:var(--ink);
-  background:#fff;cursor:pointer;transition:.16s;font-family:var(--sans)}
-.fltbtn:hover{border-color:var(--muted);background:var(--bg-2)}
-.fltbtn[aria-expanded="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
-.fltbtn b{background:var(--accent);color:#fff;border-radius:99px;font-size:.7rem;font-weight:700;
-  min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
-.fltbtn[aria-expanded="true"] b{background:#fff;color:var(--navy)}
-#chips[hidden]{display:none}
-.chips{display:flex;flex-direction:column;gap:14px;padding:16px 2px 4px}
-.fgrp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.fgrp__t{font-family:var(--sans);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--muted);font-weight:700;white-space:nowrap;min-width:120px}
-.fgrp__c{display:flex;flex-wrap:wrap;gap:8px}
-@media(max-width:640px){.fgrp{flex-direction:column;align-items:flex-start;gap:6px}
-  .fgrp__t{min-width:0}}
+.flt__in{display:flex;align-items:flex-start;padding:12px 0}
+.fbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.fgrp2{position:relative}
+.fbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
+  padding:8px 15px;font-size:.81rem;font-weight:500;color:var(--ink-2);
+  border-radius:99px;background:#fff;cursor:pointer;transition:.16s;font-family:var(--sans);
+  white-space:nowrap}
+.fbtn:hover{border-color:var(--muted);background:var(--bg-2)}
+.fbtn::after{content:'';width:6px;height:6px;border-right:1.6px solid currentColor;
+  border-bottom:1.6px solid currentColor;transform:rotate(45deg) translateY(-2px);
+  transition:transform .16s;flex:none;opacity:.55}
+.fbtn[aria-expanded="true"]{border-color:var(--navy);color:var(--navy);background:var(--bg-2)}
+.fbtn[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(1px)}
+.fbtn.active{border-color:var(--navy);background:var(--navy);color:#fff}
+.fdrop{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:60;
+  background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh-2);
+  padding:10px;min-width:200px;flex-direction:column;gap:6px}
+.fdrop.show{display:flex}
+@media(max-width:640px){
+  .fbar{gap:6px}
+  .fbtn{padding:7px 12px;font-size:.78rem}
+  .fdrop{left:auto;right:0;min-width:180px}
+}
 .chip{flex:none;border:1px solid var(--line);padding:8px 15px;font-size:.81rem;
-  white-space:nowrap;color:var(--ink-2);border-radius:99px;transition:.16s;font-weight:500}
+  white-space:nowrap;color:var(--ink-2);border-radius:99px;transition:.16s;font-weight:500;
+  background:#fff;cursor:pointer;font-family:var(--sans);text-align:left}
 .chip:hover{border-color:var(--muted);background:var(--bg-2)}
 .chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
 .chip--rst{color:var(--accent);border-color:transparent;font-weight:600}
+.fdrop .chip{width:100%;border-radius:10px}
 /* Desplegable dins de la barra de filtres: mateix aspecte que un chip,
    però ocupa una sola posició en comptes de tres. */
 .chip--sel{appearance:none;cursor:pointer;background:#fff;padding-right:32px;
@@ -645,24 +652,18 @@ select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-vi
 
   <div class="flt">
     <div class="wrap flt__in">
-      <div class="flt__bar">
-        <button class="fltbtn" id="fltToggle" type="button" aria-expanded="false" aria-controls="chips">
-          <span data-i="btFiltres"></span><b id="fltCount" hidden></b>
-        </button>
-        <button class="chip chip--rst" id="bRst" hidden data-i="chRst"></button>
-      </div>
-      <div class="chips" id="chips" hidden>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpPreu"></span>
-          <div class="fgrp__c">
+      <div class="fbar" id="fbar">
+        <div class="fgrp2" data-grp="preu">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpPreu"></button>
+          <div class="fdrop">
             <button class="chip" data-f="preu" data-v="h350"    aria-pressed="false" data-i="chPreu1"></button>
             <button class="chip" data-f="preu" data-v="350-400" aria-pressed="false" data-i="chPreu2"></button>
             <button class="chip" data-f="preu" data-v="400plus" aria-pressed="false" data-i="chPreu3"></button>
           </div>
         </div>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpZona"></span>
-          <div class="fgrp__c">
+        <div class="fgrp2" data-grp="barri">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpZona"></button>
+          <div class="fdrop">
             <button class="chip" data-f="barri" data-v="Centre"      aria-pressed="false" data-i="chZ1"></button>
             <button class="chip" data-f="barri" data-v="Sant Pere"   aria-pressed="false" data-i="chZ2"></button>
             <button class="chip" data-f="barri" data-v="Ca n'Aurell" aria-pressed="false" data-i="chZ3"></button>
@@ -670,36 +671,37 @@ select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-vi
             <button class="chip" data-f="barri" data-v="Can Palet"   aria-pressed="false" data-i="chZ5"></button>
           </div>
         </div>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpDisp"></span>
-          <div class="fgrp__c">
+        <div class="fgrp2" data-grp="disp">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpDisp"></button>
+          <div class="fdrop">
             <button class="chip" data-f="disp" data-v="disponible" aria-pressed="false" data-i="chDispA"></button>
             <button class="chip" data-f="disp" data-v="propera"    aria-pressed="false" data-i="chDispB"></button>
             <button class="chip" data-f="disp" data-v="ocupada"    aria-pressed="false" data-i="chDispC"></button>
           </div>
         </div>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpBany"></span>
-          <div class="fgrp__c">
+        <div class="fgrp2" data-grp="bany">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpBany"></button>
+          <div class="fdrop">
             <button class="chip" data-f="bany" data-v="privat"    aria-pressed="false" data-i="chBanyP"></button>
             <button class="chip" data-f="bany" data-v="compartit" aria-pressed="false" data-i="chBanyC"></button>
           </div>
         </div>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpHab"></span>
-          <div class="fgrp__c">
+        <div class="fgrp2" data-grp="tipus">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpHab"></button>
+          <div class="fdrop">
             <button class="chip" data-f="tipus" data-v="doble"      aria-pressed="false" data-i="chDob"></button>
             <button class="chip" data-f="tipus" data-v="individual" aria-pressed="false" data-i="chInd"></button>
           </div>
         </div>
-        <div class="fgrp">
-          <span class="fgrp__t" data-i="grpComp"></span>
-          <div class="fgrp__c">
+        <div class="fgrp2" data-grp="comp">
+          <button class="fbtn" type="button" aria-expanded="false" data-i="grpComp"></button>
+          <div class="fdrop">
             <button class="chip" data-f="comp" data-v="petit" aria-pressed="false" data-i="chComp1"></button>
             <button class="chip" data-f="comp" data-v="mitja" aria-pressed="false" data-i="chComp2"></button>
             <button class="chip" data-f="comp" data-v="gran"  aria-pressed="false" data-i="chComp3"></button>
           </div>
         </div>
+        <button class="chip chip--rst" id="bRst" hidden data-i="chRst"></button>
       </div>
     </div>
   </div>
@@ -1775,8 +1777,9 @@ function pintaUI(f){
   $$('.chip[data-f]').forEach(c=>{
     c.setAttribute('aria-pressed', f[c.dataset.f]===c.dataset.v?'true':'false');
   });
-  const nAct=['barri','preu','bany','tipus','disp','comp'].filter(k=>f[k]).length;
-  $('#fltCount').hidden=!nAct; $('#fltCount').textContent=nAct;
+  $$('.fgrp2[data-grp]').forEach(g=>{
+    g.querySelector('.fbtn').classList.toggle('active', !!f[g.dataset.grp]);
+  });
   $('#bRst').hidden=!(f.barri||f.data||f.preu||f.bany||f.tipus||f.disp||f.comp);
 }
 
@@ -2089,18 +2092,32 @@ $('#lang').onclick=e=>{const b=e.target.closest('button[data-l]');if(b)setIdioma
 $('#fCerca').onsubmit=e=>{e.preventDefault();const f=filtres();
   f.barri=$('#fBarri').value;f.data=$('#fData').value;setF(f);
   if(PIS_OBERT)anarLlista();else aplica()};
-$('#fltToggle').onclick=()=>{
-  const p=$('#chips'), open=p.hidden;
-  p.hidden=!open; $('#fltToggle').setAttribute('aria-expanded', open?'true':'false');
-};
-$('#chips').onclick=e=>{const c=e.target.closest('.chip[data-f]');if(!c)return;
-  const f=filtres(),k=c.dataset.f;
-  f[k]=f[k]===c.dataset.v?'':c.dataset.v;setF(f);aplica()};
+function tancaDrops(except){
+  $$('.fdrop.show').forEach(d=>{if(d!==except){d.classList.remove('show');
+    d.previousElementSibling.setAttribute('aria-expanded','false')}});
+}
+$('#fbar').addEventListener('click',e=>{
+  const btn=e.target.closest('.fbtn');
+  if(btn){
+    const drop=btn.nextElementSibling, open=drop.classList.contains('show');
+    tancaDrops(open?null:drop);
+    drop.classList.toggle('show', !open);
+    btn.setAttribute('aria-expanded', (!open).toString());
+    return;
+  }
+  const c=e.target.closest('.chip[data-f]');
+  if(c){
+    const f=filtres(),k=c.dataset.f;
+    f[k]=f[k]===c.dataset.v?'':c.dataset.v;setF(f);aplica();
+    tancaDrops(null);
+  }
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.fgrp2'))tancaDrops(null)});
 $('#bRst').onclick=()=>{const f=filtres();
   history.replaceState(null,'',location.pathname);aplica()};
 $('#sort').onchange=()=>{const f=filtres();f.sort=$('#sort').value;setF(f);aplica()};
 $('#modal').onclick=e=>{if(e.target.dataset.close!==undefined)tanca()};
-document.onkeydown=e=>{if(e.key==='Escape'){if(!$('#modal').hidden)tanca();else if(PIS_OBERT)anarLlista()}};
+document.onkeydown=e=>{if(e.key==='Escape'){if(!$('#modal').hidden)tanca();else if(PIS_OBERT)anarLlista();else tancaDrops(null)}};
 
 /* Arrencada */
 function initMapa(){
