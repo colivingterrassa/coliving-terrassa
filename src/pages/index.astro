@@ -12,6 +12,23 @@ function listImgs(dir) {
   }
 }
 
+// Ordena les fotos comunes d'un pis: menjador, cuina, bany i després la resta
+// (terrasses, balcons, patis, fotos sense categoria...).
+function ordenaFotosPis(files) {
+  const prioritat = f => {
+    const n = f.toLowerCase();
+    if (/menjador/.test(n)) return 0;
+    if (/cuina/.test(n)) return 1;
+    if (/bany/.test(n)) return 2;
+    return 3;
+  };
+  return [...files].sort((a, b) => {
+    const pa = prioritat(a), pb = prioritat(b);
+    if (pa !== pb) return pa - pb;
+    return a.localeCompare(b, 'ca', { numeric: true, sensitivity: 'base' });
+  });
+}
+
 const FOTOS_DIR = path.join(process.cwd(), 'public', 'fotos');
 
 const PIS_SLUGS = {1:'22-juliol',2:'sant-jordi',3:'font-vella',4:'catalunya',6:'22-juliol-333',7:'universitat',8:'universitat-2',9:'sant-genis',10:'bartomeu-amat',11:'salvador-espriu',12:'prat-de-la-riba',13:'rellinars'};
@@ -32,7 +49,7 @@ const HAB_PIS_OF = {
 
 const fotosPisos = {};
 for (const slug of Object.values(PIS_SLUGS)) {
-  fotosPisos[slug] = listImgs(path.join(FOTOS_DIR, 'pisos', slug))
+  fotosPisos[slug] = ordenaFotosPis(listImgs(path.join(FOTOS_DIR, 'pisos', slug)))
     .map(f => `/fotos/pisos/${slug}/${encodeURIComponent(f)}`);
 }
 
