@@ -637,7 +637,7 @@ select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-vi
       <button data-l="es" aria-pressed="false">ESP</button>
       <button data-l="en" aria-pressed="false">ENG</button>
     </div>
-    <a class="cta" href="mailto:hola@colivingterrassa.com" data-i="contact"></a>
+    <a class="cta" href="mailto:hola@colivingterrassa.com" data-i="contact" onclick="obrirContacte();return false"></a>
   </div>
 </header>
 
@@ -1922,7 +1922,7 @@ function obrirPis(id){
           <div class="aside__r"><span>${t('superficie')}</span><b>${p.m2} m²</b></div>
           <div class="aside__r"><span>${t('valoracio')}</span><b>${p.nrev?('★ '+p.rating.toFixed(1)+' ('+p.nrev+')'):t('pisNou')}</b></div>
         </div>
-        <button class="btn" onclick="obrirHab(${(lliuresDe(id)[0]||totes[0]).id})">${t('solInfo')}</button>
+        <button class="btn" onclick="obrirConsultaPis(${id})">${t('solInfo')}</button>
         <p style="font-size:.76rem;color:var(--muted);text-align:center;margin-top:10px">${t('fNota')}</p>
       </aside>
     </div>`;
@@ -1990,6 +1990,92 @@ window.obrirHab=function(id){
       subject:'Nueva solicitud de información — '+h.codi+' ('+p.nom+')',
       from_name:d.get('nom'), nom:d.get('nom'), email:d.get('email'), telefon:d.get('tel')||'',
       missatge:d.get('msg')||'', habitacio:h.codi, pis:p.nom, formulari:'Solicitud de información (inquilino)'
+    }).then(ok=>{
+      if(ok){
+        const _pL=ev.target.parentNode;
+        ev.target.outerHTML='<div class="okb"><strong>'+t('okT')+'</strong>'+t('okP')+'</div>';
+        const _okL=_pL.querySelector('.okb'); if(_okL) _okL.scrollIntoView({behavior:'smooth',block:'center'});
+      } else {
+        if(btn) btn.disabled=false;
+        sErr(er,t('eEnviament'));
+      }
+    });
+  };
+};
+window.obrirConsultaPis=function(pisId){
+  const p=PISOS.find(x=>x.id===pisId); if(!p)return;
+  $('#modal').hidden=false; document.body.style.overflow='hidden';
+  $('#mC').innerHTML=`
+    <div class="md__gal">${coverHtml('pisos', FOTOS.pisSlug[p.id], p.id-1, esc(p.nom), "font-size:2.2rem", true)}</div>\n    ${galeriaHtml('pisos', FOTOS.pisSlug[p.id])}
+    <div class="md__c">
+      <h2>${esc(p.nom)}</h2>
+      <p class="pv__loc">${esc(p.adreca)} · ${esc(p.barri)}</p>
+      <h4>${t('solInfo')}</h4>
+      <form class="frm" id="fLead" novalidate>
+        <div class="row">
+          <input name="nom" placeholder="${t('fNom')}" required>
+          <input name="email" type="email" placeholder="${t('fEmail')}" required>
+        </div>
+        <input name="tel" type="tel" placeholder="${t('fTel')}">
+        <textarea name="msg" placeholder="${t('fMsg')}"></textarea>
+        <label class="cons"><input type="checkbox" name="rgpd" required>${t('fRgpd')}</label>
+        <p class="err" id="eLead" hidden></p>
+        <button class="btn" type="submit">${t('fEnviar')}</button>
+        <small>${t('fNota')}</small>
+      </form>
+    </div>`;
+  $('#fLead').onsubmit=ev=>{
+    ev.preventDefault();
+    const d=new FormData(ev.target), er=$('#eLead'); er.hidden=true;
+    if((d.get('nom')||'').trim().length<2) return sErr(er,t('eNom'));
+    if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(d.get('email')||'')) return sErr(er,t('eEmail'));
+    if(!d.get('rgpd')) return sErr(er,t('eRgpd'));
+    const btn=ev.target.querySelector('button[type=submit]'); if(btn) btn.disabled=true;
+    enviaFormulari({
+      subject:'Nueva solicitud de información — Piso '+p.nom+' (sin habitación concreta)',
+      from_name:d.get('nom'), nom:d.get('nom'), email:d.get('email'), telefon:d.get('tel')||'',
+      missatge:d.get('msg')||'', habitacio:'—', pis:p.nom, formulari:'Solicitud de información (piso general)'
+    }).then(ok=>{
+      if(ok){
+        const _pL=ev.target.parentNode;
+        ev.target.outerHTML='<div class="okb"><strong>'+t('okT')+'</strong>'+t('okP')+'</div>';
+        const _okL=_pL.querySelector('.okb'); if(_okL) _okL.scrollIntoView({behavior:'smooth',block:'center'});
+      } else {
+        if(btn) btn.disabled=false;
+        sErr(er,t('eEnviament'));
+      }
+    });
+  };
+};
+window.obrirContacte=function(){
+  $('#modal').hidden=false; document.body.style.overflow='hidden';
+  $('#mC').innerHTML=`
+    <div class="md__c" style="padding-top:28px">
+      <h2>${t('contact')}</h2>
+      <form class="frm" id="fLead" novalidate>
+        <div class="row">
+          <input name="nom" placeholder="${t('fNom')}" required>
+          <input name="email" type="email" placeholder="${t('fEmail')}" required>
+        </div>
+        <input name="tel" type="tel" placeholder="${t('fTel')}">
+        <textarea name="msg" placeholder="${t('fMsg')}"></textarea>
+        <label class="cons"><input type="checkbox" name="rgpd" required>${t('fRgpd')}</label>
+        <p class="err" id="eLead" hidden></p>
+        <button class="btn" type="submit">${t('fEnviar')}</button>
+        <small>${t('fNota')}</small>
+      </form>
+    </div>`;
+  $('#fLead').onsubmit=ev=>{
+    ev.preventDefault();
+    const d=new FormData(ev.target), er=$('#eLead'); er.hidden=true;
+    if((d.get('nom')||'').trim().length<2) return sErr(er,t('eNom'));
+    if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(d.get('email')||'')) return sErr(er,t('eEmail'));
+    if(!d.get('rgpd')) return sErr(er,t('eRgpd'));
+    const btn=ev.target.querySelector('button[type=submit]'); if(btn) btn.disabled=true;
+    enviaFormulari({
+      subject:'Nueva consulta general (formulario de contacto)',
+      from_name:d.get('nom'), nom:d.get('nom'), email:d.get('email'), telefon:d.get('tel')||'',
+      missatge:d.get('msg')||'', habitacio:'—', pis:'—', formulari:'Consulta general'
     }).then(ok=>{
       if(ok){
         const _pL=ev.target.parentNode;
