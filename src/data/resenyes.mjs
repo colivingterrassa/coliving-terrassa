@@ -1,0 +1,32 @@
+// Dades de la web. Editar aquí (no a index.astro). Es fan servir tant al navegador com en compilar.
+/* Ressenyes: pis = id del pis, hab = codi d'habitació (opcional) */
+export const REV=[
+ {pis:1,hab:null,n:'Hugo',loc:{ca:'Vigo, Espanya',es:'Vigo, España',en:'Vigo, Spain'},r:5,
+  t:{ca:"La meva experiència ha estat immillorable. Al llarg dels 6 mesos han tingut una atenció total i preocupació per l'estat dels inquilins i de la casa. Deixant clar que ofereixen un servei diferent i de qualitat.",
+     es:"Mi experiencia ha sido inmejorable. A lo largo de los 6 meses han tenido una total atención y preocupación por el estado de los inquilinos y de la casa. Dejando claro que ofrecen un servicio diferente y de calidad.",
+     en:"My experience could not have been better. Over the six months they were completely attentive to both the tenants and the state of the house. They clearly offer a different, high-quality service."}},
+ {pis:1,hab:'PAS-3',n:'Júlia',loc:{ca:'Girona',es:'Girona',en:'Girona, Spain'},r:5,
+  t:{ca:"El balcó de la PAS-3 va ser el que em va fer decidir. Esmorzar-hi cada matí no té preu, i tenir bany propi en un pis compartit canvia molt el dia a dia.",
+     es:"El balcón de la PAS-3 fue lo que me hizo decidirme. Desayunar allí cada mañana no tiene precio, y tener baño propio en un piso compartido cambia mucho el día a día.",
+     en:"The balcony in PAS-3 was what convinced me. Having breakfast there every morning is priceless, and having your own bathroom in a shared flat really changes daily life."}},
+ {pis:2,hab:null,n:'Valeria Pereira',loc:{ca:'Colòmbia',es:'Colombia',en:'Colombia'},r:5,
+  t:{ca:"Van a fer quasi dos anys des que vaig tenir la grandiosa casualitat de viure al «castell», com li dèiem els meus companys i jo. Havia deixat un pis que no m'agradava i amb urgència buscava un lloc on sentir-me còmoda. En un dia vaig trobar la que seria la meva següent habitació. La casa era preciosa i molt lluminosa.",
+     es:"Van a ser casi dos años desde que tuve la grandiosa casualidad de vivir en el «castillo», como le solíamos llamar mis compañeros y yo. Había dejado un piso que no me gustaba y con urgencia buscaba un lugar donde sentirme cómoda. En un día encontré la que iba a ser mi siguiente habitación. La casa era preciosa y muy luminosa.",
+     en:"It has been almost two years since I had the wonderful stroke of luck of living in 'the castle', as my flatmates and I used to call it. I had left a flat I disliked and urgently needed somewhere I could feel comfortable. In a single day I found what would become my next room. The house was beautiful and full of light."}},
+ {pis:2,hab:'SJO-3',n:'Andrea',loc:{ca:'Itàlia',es:'Italia',en:'Italy'},r:5,
+  t:{ca:"Els sostres alts de la SJO-3 i les dues finestres fan que sembli un apartament sencer. I el bany privat, en una casa de sis persones, és or.",
+     es:"Los techos altos de la SJO-3 y las dos ventanas hacen que parezca un apartamento entero. Y el baño privado, en una casa de seis personas, es oro.",
+     en:"The high ceilings in SJO-3 and the two windows make it feel like a whole apartment. And a private bathroom in a house of six is pure gold."}},
+ {pis:3,hab:null,n:'Marta',loc:{ca:'Terrassa',es:'Terrassa',en:'Terrassa, Spain'},r:5,
+  t:{ca:"Viure al centre i que el pis sigui silenciós semblava impossible, però les habitacions del pati ho aconsegueixen. Ho tens tot a peu i a la vegada descanses.",
+     es:"Vivir en el centro y que el piso sea silencioso parecía imposible, pero las habitaciones del patio lo consiguen. Lo tienes todo a pie y a la vez descansas.",
+     en:"Living in the centre and still having a quiet flat seemed impossible, but the courtyard rooms manage it. Everything is walkable and you still get to rest."}},
+ {pis:4,hab:null,n:'Nicolás',loc:{ca:'Argentina',es:'Argentina',en:'Argentina'},r:5,
+  t:{ca:"Les zones comunes són enormes i això es nota quan sou sis. Mai he hagut d'esperar per cuinar, i tenir dues neveres sembla una tonteria fins que vius en un pis compartit.",
+     es:"Las zonas comunes son enormes y eso se nota cuando sois seis. Nunca he tenido que esperar para cocinar, y tener dos neveras parece una tontería hasta que vives en un piso compartido.",
+     en:"The shared areas are huge and it shows when there are six of you. I never had to wait to cook, and two fridges sounds trivial until you live in a shared flat."}},
+ {pis:5,hab:null,n:'Pau',loc:{ca:'Barcelona',es:'Barcelona',en:'Barcelona, Spain'},r:5,
+  t:{ca:"Teletreballo i necessitava silenci de 9 a 18. Ser només dos a la casa ho canvia tot. La gestió, ràpida i sense embuts.",
+     es:"Teletrabajo y necesitaba silencio de 9 a 18. Ser solo dos en la casa lo cambia todo. La gestión, rápida y sin rodeos.",
+     en:"I work remotely and needed quiet from 9 to 6. Being just two in the house changes everything. Management is fast and straightforward."}}
+];

@@ -1,0 +1,6 @@
+# CoLiving Terrassa — https://www.colivingterrassa.com/
+# Tot el contingut públic es pot rastrejar, també pels assistents d'IA.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.colivingterrassa.com/sitemap.xml
