@@ -3,6 +3,9 @@
 export const SITE = 'https://www.colivingterrassa.com';
 export const SITE_NAME = 'CoLiving Terrassa';
 export const EMAIL = 'hola@colivingterrassa.com';
+export const PHONE = '+34646321585';
+export const PHONE_FMT = '646 32 15 85';
+export const INSTAGRAM = 'https://www.instagram.com/colivingterrassa/';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -36,6 +39,8 @@ export function buildJsonLd({ PISOS, HAB, FAQS }) {
     image: SITE + '/og-image.jpg',
     description: INTRO.ca,
     email: EMAIL,
+    telephone: PHONE,
+    sameAs: [INSTAGRAM],
     address: { '@type': 'PostalAddress', addressLocality: 'Terrassa', addressRegion: 'Barcelona', addressCountry: 'ES' },
     areaServed: { '@type': 'City', name: 'Terrassa' },
     knowsLanguage: LANGS,
@@ -90,7 +95,7 @@ export function buildNoscript({ PISOS, HAB, FAQS }) {
     for (const [q, a] of FAQS[l]) h += `<h3>${esc(q)}</h3><p>${esc(a)}</p>`;
     h += `</section>`;
   }
-  h += `<h2>${esc(H.ca.contact)}</h2><p><a href="mailto:${EMAIL}">${EMAIL}</a> · Terrassa, Barcelona · ${esc(H.ca.hours)}</p></div>`;
+  h += `<h2>${esc(H.ca.contact)}</h2><p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="tel:${PHONE}">${PHONE_FMT}</a> · <a href="${INSTAGRAM}">Instagram</a> · Terrassa, Barcelona · ${esc(H.ca.hours)}</p></div>`;
   return h;
 }
 
@@ -100,7 +105,7 @@ export function buildLlms({ PISOS, HAB, FAQS }) {
   L.push(`# ${SITE_NAME}`, '');
   L.push(`> ${INTRO.en}`, '');
   L.push(`- ES: ${INTRO.es}`, `- CA: ${INTRO.ca}`, '');
-  L.push(`Web: ${SITE}/ (català, castellano, English; el selector d'idioma és a la capçalera) · Contact: ${EMAIL} · ${H.en.hours}`, '');
+  L.push(`Web: ${SITE}/ (català, castellano, English; el selector d'idioma és a la capçalera) · Contact: ${EMAIL} · Phone: ${PHONE} · Instagram: ${INSTAGRAM} · ${H.en.hours}`, '');
   L.push('## Key facts', '');
   L.push(`- ${st.pisos} flats and ${st.hab} rooms in Terrassa (Barcelona): ${st.barris.join(', ')}.`);
   L.push(`- Monthly rent per room ranges from ${st.min} to ${st.max} euros; see the FAQ for what the price includes. Availability changes over time and is shown on the website.`);
