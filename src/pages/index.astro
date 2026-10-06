@@ -2100,11 +2100,12 @@ function ckGet(){
   return null;
 }
 function ckNetejaGA(){
-  const dom=location.hostname.replace(/^www\./,'');
+  const parts=location.hostname.split('.'), doms=[''];
+  for(let i=0;i<parts.length-1;i++){const h=parts.slice(i).join('.'); doms.push('; domain='+h,'; domain=.'+h);}
   document.cookie.split(';').forEach(c=>{
     const n=c.split('=')[0].trim();
     if(n==='_ga'||n.indexOf('_ga_')===0||n==='_gid'||n.indexOf('_gat')===0){
-      ['','; domain='+dom,'; domain=.'+dom,'; domain=www.'+dom].forEach(d=>{
+      doms.forEach(d=>{
         document.cookie=n+'=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'+d;
       });
     }
