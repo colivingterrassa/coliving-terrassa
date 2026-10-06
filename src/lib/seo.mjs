@@ -5,6 +5,7 @@ export const SITE_NAME = 'CoLiving Terrassa';
 export const EMAIL = 'hola@colivingterrassa.com';
 export const PHONE = '+34646321585';
 export const PHONE_FMT = '646 32 15 85';
+export const GMAPS = 'https://www.google.com/maps?cid=11265816990376276175';
 export const INSTAGRAM = 'https://www.instagram.com/colivingterrassa/';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -41,6 +42,7 @@ export function buildJsonLd({ PISOS, HAB, FAQS }) {
     email: EMAIL,
     telephone: PHONE,
     sameAs: [INSTAGRAM],
+    hasMap: GMAPS,
     address: { '@type': 'PostalAddress', addressLocality: 'Terrassa', addressRegion: 'Barcelona', addressCountry: 'ES' },
     areaServed: { '@type': 'City', name: 'Terrassa' },
     knowsLanguage: LANGS,
