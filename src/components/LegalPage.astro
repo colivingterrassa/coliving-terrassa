@@ -1,0 +1,101 @@
+---
+const { doc } = Astro.props;
+const langs = ['ca', 'es', 'en'];
+const lab = { ca: 'Català', es: 'Castellano', en: 'English' };
+const back = { ca: 'Tornar al web', es: 'Volver a la web', en: 'Back to the website' };
+const foot = {
+  ca: ['Avís legal', 'Política de privacitat', 'Política de cookies'],
+  es: ['Aviso legal', 'Política de privacidad', 'Política de cookies'],
+  en: ['Legal notice', 'Privacy policy', 'Cookie policy']
+};
+const noscript = '.lg[hidden]{display:block!important}.lg+.lg{margin-top:48px;padding-top:32px;border-top:1px solid #DFE4E9}';
+---
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{doc.ca.title} · CoLiving Terrassa</title>
+<meta name="description" content={doc.ca.title + ' de CoLiving Terrassa'}>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style is:global>
+:root{--ink:#1F2A33;--ink-2:#4C5C69;--muted:#7E8C99;--line:#DFE4E9;--bg:#fff;--bg-2:#F7F9FA;--bg-3:#EFF3F6;--navy:#1B2B3A;--accent:#B06E3B;--accent-2:#94592C}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:16px}
+a{color:var(--accent-2);text-decoration:underline;text-underline-offset:2px}
+.hd{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.97);z-index:5}
+.hd__in{max-width:860px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.hd img{height:30px;width:auto;display:block}
+.lang{display:flex;gap:2px;background:var(--bg-3);padding:3px;border-radius:6px}
+.lang button{border:0;background:none;font:inherit;font-size:.78rem;font-weight:600;padding:5px 10px;border-radius:4px;color:var(--muted);cursor:pointer}
+.lang button[aria-pressed=true]{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(27,43,58,.12)}
+main{max-width:860px;margin:0 auto;padding:36px 20px 64px}
+.back{display:inline-block;font-size:.88rem;margin-bottom:22px;color:var(--ink-2)}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:2rem;line-height:1.2;color:var(--navy);margin-bottom:6px}
+h2{font-family:Georgia,"Times New Roman",serif;font-size:1.2rem;color:var(--navy);margin:30px 0 8px}
+p{margin:0 0 12px;color:var(--ink-2)}
+ul{margin:0 0 12px 22px;color:var(--ink-2)}li{margin-bottom:8px}
+.upd{font-size:.85rem;color:var(--muted);margin-bottom:22px}
+.idt{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;background:var(--bg-2);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:8px 0 14px;font-size:.95rem}
+.idt dt{font-weight:600;color:var(--ink)}.idt dd{color:var(--ink-2);word-break:break-word}
+.pend{background:#FBF2E2;color:#9A6B1F;padding:1px 5px;border-radius:3px}
+.tw{overflow-x:auto;margin:8px 0 14px}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;color:var(--ink-2)}
+th{background:var(--bg-2);color:var(--ink);font-weight:600}
+.btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:.88rem;padding:10px 18px;border-radius:6px}
+.btn:hover{background:#24384B}
+footer{border-top:1px solid var(--line);background:var(--bg-2)}
+.ft__in{max-width:860px;margin:0 auto;padding:22px 20px;font-size:.85rem;color:var(--muted);display:flex;gap:10px 22px;flex-wrap:wrap;justify-content:space-between}
+.ft__in a{color:var(--ink-2)}
+@media(max-width:560px){h1{font-size:1.6rem}.idt{grid-template-columns:1fr}.idt dt{margin-top:6px}}
+</style>
+<noscript><style set:html={noscript}></style></noscript>
+</head>
+<body>
+<header class="hd"><div class="hd__in">
+  <a href="/" aria-label="CoLiving Terrassa"><img src="/logo.svg" alt="CoLiving Terrassa"></a>
+  <div class="lang" id="lang" role="group" aria-label="Idioma / Language">
+    {langs.map(l => <button type="button" data-l={l} aria-pressed={l === 'ca' ? 'true' : 'false'}>{l.toUpperCase()}</button>)}
+  </div>
+</div></header>
+<main>
+  <a class="back" href="/" data-back>{back.ca}</a>
+  {langs.map((l, i) => (
+    <article class="lg" lang={l} data-l={l} hidden={l !== 'ca'}>
+      <h1>{doc[l].title}</h1>
+      <Fragment set:html={doc[l].html} />
+    </article>
+  ))}
+</main>
+<footer><div class="ft__in">
+  <span>© 2026 CoLiving Terrassa</span>
+  <span id="fl">
+    <a href="/avis-legal/?l=ca">{foot.ca[0]}</a> · <a href="/politica-privacitat/?l=ca">{foot.ca[1]}</a> · <a href="/politica-cookies/?l=ca">{foot.ca[2]}</a>
+  </span>
+</div></footer>
+<script is:inline>
+(function(){
+  var titles={}, back={ca:'Tornar al web',es:'Volver a la web',en:'Back to the website'};
+  var arts=document.querySelectorAll('.lg');
+  arts.forEach(function(a){titles[a.dataset.l]=a.querySelector('h1').textContent});
+  var cfg={ca:['Avís legal','Política de privacitat','Política de cookies'],es:['Aviso legal','Política de privacidad','Política de cookies'],en:['Legal notice','Privacy policy','Cookie policy']};
+  var paths=['/avis-legal/','/politica-privacitat/','/politica-cookies/'];
+  function set(l){
+    arts.forEach(function(a){a.hidden=a.dataset.l!==l});
+    document.documentElement.lang=l;
+    document.title=titles[l]+' · CoLiving Terrassa';
+    document.querySelectorAll('#lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===l?'true':'false')});
+    document.querySelector('[data-back]').textContent=back[l];
+    document.getElementById('fl').innerHTML=cfg[l].map(function(n,i){return '<a href="'+paths[i]+'?l='+l+'">'+n+'</a>'}).join(' · ');
+    try{history.replaceState(null,'',location.pathname+'?l='+l)}catch(e){}
+  }
+  var m=/[?&]l=(ca|es|en)/.exec(location.search);
+  if(m && m[1]!=='ca') set(m[1]);
+  document.getElementById('lang').addEventListener('click',function(e){var b=e.target.closest('button');if(b)set(b.dataset.l)});
+})();
+</script>
+</body>
+</html>
