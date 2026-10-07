@@ -36,7 +36,7 @@ function ordenaFotosPis(files) {
 
 const FOTOS_DIR = path.join(process.cwd(), 'public', 'fotos');
 
-const PIS_SLUGS = {1:'22-juliol',2:'sant-jordi',3:'font-vella',4:'catalunya',6:'22-juliol-333',7:'universitat',8:'universitat-2',9:'sant-genis',10:'bartomeu-amat',11:'salvador-espriu',12:'prat-de-la-riba',13:'rellinars'};
+const PIS_SLUGS = {1:'22-juliol',2:'sant-jordi',3:'font-vella',4:'catalunya',6:'22-juliol-333',7:'universitat',8:'universitat-2',9:'sant-genis',10:'bartomeu-amat',11:'salvador-espriu',12:'prat-de-la-riba',13:'rellinars',14:'nord'};
 const HAB_PIS_OF = {
   'PAS-1':1,'PAS-2':1,'PAS-3':1,'PAS-4':1,
   'SJO-1':2,'SJO-2':2,'SJO-3':2,'SJO-4':2,'SJO-5':2,'SJO-6':2,
@@ -49,7 +49,8 @@ const HAB_PIS_OF = {
   'BAR-1':10,'BAR-2':10,'BAR-3':10,'BAR-4':10,
   'ESP-1':11,'ESP-2':11,'ESP-3':11,'ESP-4':11,
   'PRA-1':12,'PRA-2':12,'PRA-3':12,'PRA-4':12,
-  'REL-1':13,'REL-2':13,'REL-3':13
+  'REL-1':13,'REL-2':13,'REL-3':13,
+  'NOR-1':14
 };
 
 const fotosPisos = {};
@@ -1165,7 +1166,7 @@ ca:{
  splitQ:"Ets propietari i tens un pis buit o de baix rendiment a Terrassa?",splitB:"Vull saber què en podem fer",
  ownEye:"Àrea de propietaris",ownH:"Converteix el teu pis en un actiu rendible, sense gestionar-lo tu",
  ownP:"Si tens un pis a Terrassa, l'estudiem sense compromís i et diem si encaixa amb el nostre model de lloguer per habitacions. Si encaixa, ens n'ocupem de tot: nosaltres posem la gestió, tu reps la renda cada mes.",
- ownK1v:"12",ownK1:"Pisos gestionats",ownK2v:"100%",ownK2:"Ocupació mitjana",ownK3v:"5,0",ownK3:"Valoració dels inquilins",
+ ownK1v:"13",ownK1:"Pisos gestionats",ownK2v:"100%",ownK2:"Ocupació mitjana",ownK3v:"5,0",ownK3:"Valoració dels inquilins",
  ownModelH:"Com funciona el nostre model",
  ownModel:["El lloguer per habitacions permet obtenir una renda superior a la del lloguer tradicional, però exigeix una gestió constant: captació, selecció d'inquilins, contractes individuals, cobraments, incidències i rotació. <b>Nosaltres assumim aquesta gestió íntegra</b> i tu tractes amb un únic interlocutor.",
   "Treballem amb un <b>model únic i senzill</b>: cobrem un percentatge sobre la facturació que genera el pis cada mes. Res de quotes fixes ni de costos d'entrada. Si un mes es factura més, cobrem més; si es factura menys, cobrem menys.",
@@ -1250,7 +1251,7 @@ es:{
  splitQ:"¿Eres propietario y tienes un piso vacío o de bajo rendimiento en Terrassa?",splitB:"Quiero saber qué podemos hacer",
  ownEye:"Área de propietarios",ownH:"Convierte tu piso en un activo rentable, sin gestionarlo tú",
  ownP:"Si tienes un piso en Terrassa, lo estudiamos sin compromiso y te decimos si encaja con nuestro modelo de alquiler por habitaciones. Si encaja, nos ocupamos de todo: nosotros ponemos la gestión, tú recibes la renta cada mes.",
- ownK1v:"12",ownK1:"Pisos gestionados",ownK2v:"100%",ownK2:"Ocupación media",ownK3v:"5,0",ownK3:"Valoración de los inquilinos",
+ ownK1v:"13",ownK1:"Pisos gestionados",ownK2v:"100%",ownK2:"Ocupación media",ownK3v:"5,0",ownK3:"Valoración de los inquilinos",
  ownModelH:"Cómo funciona nuestro modelo",
  ownModel:["El alquiler por habitaciones permite obtener una renta superior a la del alquiler tradicional, pero exige una gestión constante: captación, selección de inquilinos, contratos individuales, cobros, incidencias y rotación. <b>Nosotros asumimos esa gestión íntegra</b> y tú tratas con un único interlocutor.",
   "Trabajamos con un <b>modelo único y sencillo</b>: cobramos un porcentaje sobre la facturación que genera el piso cada mes. Nada de cuotas fijas ni de costes de entrada. Si un mes se factura más, cobramos más; si se factura menos, cobramos menos.",
@@ -1335,7 +1336,7 @@ en:{
  splitQ:"Are you a landlord with an empty or underperforming flat in Terrassa?",splitB:"Show me what you can do",
  ownEye:"Landlords",ownH:"Turn your flat into a performing asset, without managing it yourself",
  ownP:"If you own a flat in Terrassa, we will assess it with no obligation and tell you whether it fits our room-by-room rental model. If it does, we handle everything: we provide the management, you receive the rent each month.",
- ownK1v:"12",ownK1:"Flats managed",ownK2v:"100%",ownK2:"Average occupancy",ownK3v:"5.0",ownK3:"Tenant rating",
+ ownK1v:"13",ownK1:"Flats managed",ownK2v:"100%",ownK2:"Average occupancy",ownK3v:"5.0",ownK3:"Tenant rating",
  ownModelH:"How our model works",
  ownModel:["Renting by the room generates a higher return than a traditional let, but it demands constant management: marketing, tenant screening, individual contracts, rent collection, maintenance issues and turnover. <b>We take on that management in full</b> and you deal with a single point of contact.",
   "We work with a <b>single, straightforward model</b>: we charge a percentage of the income the flat generates each month. No fixed fees and no set-up costs. If the flat earns more in a given month, we earn more; if it earns less, we earn less.",
@@ -1536,7 +1537,7 @@ function aplica(){
       <div class="card__b">
         <h3 class="card__t">${esc(p.nom)}</h3>
         <p class="card__l">${esc(p.barri)}, Terrassa · ${p.nrev?('<span class="rate"><span>★</span>'+p.rating.toFixed(1)+'</span>'):('<span class="rate rate--new">'+t('pisNou')+'</span>')}</p>
-        <p class="card__meta"><span>${p.m2} m²</span><i></i><span>${p.nbany} ${t('banys')}</span><i></i><span>${p.nhab-1} ${p.nhab-1===1?t('company'):t('companys')}</span></p>
+        <p class="card__meta">${(p.nhab>1?[p.m2?(p.m2+' m²'):'',p.nbany?(p.nbany+' '+t('banys')):'',(p.nhab-1)+' '+(p.nhab-1===1?t('company'):t('companys'))]:[p.m2?(p.m2+' m²'):'',p.nbany?(p.nbany+' '+t('banys')):'',p.nhab+' '+(p.nhab===1?t('hab'):t('habs'))]).filter(Boolean).map(x=>'<span>'+x+'</span>').join('<i></i>')}</p>
         <div class="card__f">
           <div class="price"><em>${t('desDe')}</em>${pd?pd+' €':'—'}<small>${t('mes')}</small></div>
           <span class="more">${t('veureMes')} →</span></div>
@@ -1591,9 +1592,9 @@ function obrirPis(id){
           ${p.nrev?('&nbsp;<span class="rate"><span>★</span>'+p.rating.toFixed(1)+'</span><span style="color:var(--muted)">('+p.nrev+')</span>'):('&nbsp;<span class="rate rate--new">'+t('pisNou')+'</span>')}</p>
 
         <div class="kpis" style="margin-top:22px">
-          <div class="kpi"><b>${p.m2}</b><span>m² ${t('superficie')}</span></div>
+          ${p.m2?'<div class="kpi"><b>'+p.m2+'</b><span>m² '+t('superficie')+'</span></div>':''}
           <div class="kpi"><b>${p.nhab}</b><span>${t('habitacions')}</span></div>
-          <div class="kpi"><b>${p.nbany}</b><span>${t('banys')}</span></div>
+          ${p.nbany?'<div class="kpi"><b>'+p.nbany+'</b><span>'+t('banys')+'</span></div>':''}
           <div class="kpi"><b>${nl}</b><span>${t('disponibles')}</span></div>
         </div>
 
@@ -1601,8 +1602,7 @@ function obrirPis(id){
 
         <div class="pv__sec"><h3>${t('entorn')}</h3>${pintaEntorn(p.barri)}</div>
 
-        <div class="pv__sec"><h3>${t('comoditats')}</h3>
-          <div class="amen">${p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')}</div></div>
+        ${p.amen[L].length?'<div class="pv__sec"><h3>'+t('comoditats')+'</h3><div class="amen">'+p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')+'</div></div>':''}
 
         <div class="pv__sec"><h3>${t('habsDisp')} <span style="font-family:var(--sans);font-size:.85rem;color:var(--muted);font-weight:400">· ${totes.length}</span></h3>
           <div class="rooms">${totes.map((h,i)=>{
@@ -1612,7 +1612,7 @@ function obrirPis(id){
               <div class="room__m">${coverHtml('habitacions', h.codi, i, esc(h.codi))}</div>
               <div class="room__b">
                 <div class="room__t">${esc(h.codi)} · ${t(h.tipus)}</div>
-                <div class="room__s">${h.m2} m² · ${t('bany')} ${t(h.bany).toLowerCase()}</div>
+                <div class="room__s">${h.m2?h.m2+' m² · ':''}${t('bany')} ${t(h.bany).toLowerCase()}</div>
                 <div style="margin-top:6px"><span class="bdg bdg--${e.c}" style="position:static">${e.t}</span></div>
               </div>
               <div class="room__p"><b>${h.preu} €</b><span>${t('mes')}</span></div>
@@ -1635,7 +1635,7 @@ function obrirPis(id){
         <div style="margin-top:16px">
           <div class="aside__r"><span>${t('disponibles')}</span><b>${nl} / ${totes.length}</b></div>
           <div class="aside__r"><span>${t('ubicacio')}</span><b>${esc(p.barri)}</b></div>
-          <div class="aside__r"><span>${t('superficie')}</span><b>${p.m2} m²</b></div>
+          ${p.m2?'<div class="aside__r"><span>'+t('superficie')+'</span><b>'+p.m2+' m²</b></div>':''}
           <div class="aside__r"><span>${t('valoracio')}</span><b>${p.nrev?('★ '+p.rating.toFixed(1)+' ('+p.nrev+')'):t('pisNou')}</b></div>
         </div>
         <button class="btn" onclick="obrirConsultaPis(${id})">${t('solInfo')}</button>
@@ -1673,14 +1673,13 @@ window.obrirHab=function(id){
       <span class="bdg bdg--${e.c}" style="position:static">${e.t}</span>
       <h4>${t('caracteristiques')}</h4>
       <div class="specs">
-        <div class="spec"><b>${t('superficie')}</b>${h.m2} m²</div>
+        ${h.m2?'<div class="spec"><b>'+t('superficie')+'</b>'+h.m2+' m²</div>':''}
         <div class="spec"><b>${t('bany')}</b>${t(h.bany)}</div>
         <div class="spec"><b>${t('tipus')}</b>${t(h.tipus)}</div>
         <div class="spec"><b>${t('habitacions')}</b>${p.nhab}</div>
       </div>
       <h4>${t('descripcio')}</h4><p>${h.d[L]}</p>
-      <h4>${t('comoditats')}</h4>
-      <div class="amen">${p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')}</div>
+      ${p.amen[L].length?'<h4>'+t('comoditats')+'</h4><div class="amen">'+p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')+'</div>':''}
       <h4>${oc?t('avisam'):t('solInfo')}</h4>
       <form class="frm" id="fLead" novalidate>
         <div class="row">

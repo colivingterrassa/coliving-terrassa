@@ -192,4 +192,8 @@ export const HAB=[
   d:{ca:'Habitació doble de 13 m² amb bany privat.',
      es:'Habitación doble de 13 m² con baño privado.',
      en:'Double room of 13 m² with a private bathroom.'}}
+ ,{id:49,pis:14,codi:'NOR-1',m2:10,bany:'compartit',tipus:'doble',preu:500,estat:'ocupada',des:null,
+  d:{ca:'Habitació doble de 10 m² amb bany compartit i pati interior.',
+     es:'Habitación doble de 10 m² con baño compartido y patio interior.',
+     en:'Double room of 10 m² with a shared bathroom, overlooking the interior courtyard.'}}
 ];

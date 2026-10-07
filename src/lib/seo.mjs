@@ -16,9 +16,9 @@ const INTRO = {
   en: "CoLiving Terrassa rents rooms in quality shared flats in Terrassa (Barcelona) for students and professionals. Flats managed directly by us, with no agency fee."
 };
 const H = {
-  ca: { pisos: 'Els nostres pisos', faq: 'Preguntes freqüents', contact: 'Contacte', hours: 'Dilluns a divendres, 9:00–18:00', hab: 'habitacions', banys: 'banys', price: 'Habitacions de' , priceTo: 'a', perMonth: '€/mes' },
-  es: { pisos: 'Nuestros pisos', faq: 'Preguntas frecuentes', contact: 'Contacto', hours: 'Lunes a viernes, 9:00–18:00', hab: 'habitaciones', banys: 'baños', price: 'Habitaciones de', priceTo: 'a', perMonth: '€/mes' },
-  en: { pisos: 'Our flats', faq: 'Frequently asked questions', contact: 'Contact', hours: 'Monday to Friday, 9:00–18:00', hab: 'rooms', banys: 'bathrooms', price: 'Rooms from', priceTo: 'to', perMonth: '€/month' }
+  ca: { pisos: 'Els nostres pisos', faq: 'Preguntes freqüents', contact: 'Contacte', hours: 'Dilluns a divendres, 9:00–18:00', hab: 'habitacions', hab1: 'habitació', banys: 'banys', price: 'Habitacions de' , priceTo: 'a', perMonth: '€/mes' },
+  es: { pisos: 'Nuestros pisos', faq: 'Preguntas frecuentes', contact: 'Contacto', hours: 'Lunes a viernes, 9:00–18:00', hab: 'habitaciones', hab1: 'habitación', banys: 'baños', price: 'Habitaciones de', priceTo: 'a', perMonth: '€/mes' },
+  en: { pisos: 'Our flats', faq: 'Frequently asked questions', contact: 'Contact', hours: 'Monday to Friday, 9:00–18:00', hab: 'rooms', hab1: 'room', banys: 'bathrooms', price: 'Rooms from', priceTo: 'to', perMonth: '€/month' }
 };
 const LANGS = ['ca', 'es', 'en'];
 
@@ -27,7 +27,7 @@ export function stats({ PISOS, HAB }) {
   const barris = [...new Set(PISOS.map(p => p.barri))];
   return { pisos: PISOS.length, hab: HAB.length, min: Math.min(...preus), max: Math.max(...preus), barris };
 }
-const pisLine = (p, l) => `${p.barri} · ${p.adreca} · ${p.m2} m² · ${p.nhab} ${H[l].hab} · ${p.nbany} ${H[l].banys}`;
+const pisLine = (p, l) => [p.barri, p.adreca, p.m2 ? `${p.m2} m²` : '', `${p.nhab} ${p.nhab === 1 ? H[l].hab1 : H[l].hab}`, p.nbany ? `${p.nbany} ${H[l].banys}` : ''].filter(Boolean).join(' · ');
 
 export function buildJsonLd({ PISOS, HAB, FAQS }) {
   const st = stats({ PISOS, HAB });
@@ -64,9 +64,9 @@ export function buildJsonLd({ PISOS, HAB, FAQS }) {
         url: SITE + '/',
         address: { '@type': 'PostalAddress', streetAddress: p.adreca.replace(/, Terrassa$/, ''), addressLocality: 'Terrassa', addressRegion: 'Barcelona', addressCountry: 'ES' },
         geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng },
-        floorSize: { '@type': 'QuantitativeValue', value: p.m2, unitCode: 'MTK' },
+        ...(p.m2 ? { floorSize: { '@type': 'QuantitativeValue', value: p.m2, unitCode: 'MTK' } } : {}),
         numberOfRooms: p.nhab,
-        numberOfBathroomsTotal: p.nbany,
+        ...(p.nbany ? { numberOfBathroomsTotal: p.nbany } : {}),
         amenityFeature: (p.amen && p.amen.ca || []).map(a => ({ '@type': 'LocationFeatureSpecification', name: a, value: true }))
       }
     }))

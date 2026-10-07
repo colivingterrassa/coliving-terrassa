@@ -96,4 +96,10 @@ export const PISOS=[
   amen:{ca:['Wifi fibra 600 Mb','Rentadora','Calefacció'],
         es:['Wifi fibra 600 Mb','Lavadora','Calefacción'],
         en:['600 Mb fibre Wi-Fi','Washing machine','Heating']}}
+ ,{id:14,nom:'Nord',barri:'Centre',adreca:'Carrer del Nord, 75, Terrassa',
+  m2:null,nhab:1,nbany:null,lat:41.567992,lng:2.013614,rating:0,nrev:0,
+  desc:{ca:"Habitació doble de 10 m² amb bany compartit i pati interior, al carrer del Nord, al centre de Terrassa. Ideal per a estudiants i professionals que busquen una habitació pròpia en una bona ubicació.",
+        es:'Habitación doble de 10 m² con baño compartido y patio interior, en la calle del Nord, en el centro de Terrassa. Ideal para estudiantes y profesionales que buscan una habitación propia en una buena ubicación.',
+        en:'A 10 m² double room with a shared bathroom and a view onto the interior courtyard, on Carrer del Nord in the centre of Terrassa. Ideal for students and professionals looking for a room of their own in a great location.'},
+  amen:{ca:[],es:[],en:[]}}
 ];
