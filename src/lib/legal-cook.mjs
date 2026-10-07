@@ -1,4 +1,5 @@
 import { TIT } from '../data/legal.mjs';
+const NOM_P = TIT.nom.endsWith('.') ? TIT.nom : TIT.nom + '.';
 const tbl = (h, rows) => `<div class="tw"><table><thead><tr>${h.map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td data-h="${h[i]}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const btn = t => `<p><a class="btn" href="/?cookies=1">${t}</a></p>`;
 
@@ -21,7 +22,7 @@ ${tbl(['Nom','Titular','Finalitat','Tipus','Durada'], [
 <p>Pots canviar la teva elecció en qualsevol moment des del botó següent o amb l'enllaç «Configurar cookies» del peu de pàgina. També pots esborrar o bloquejar les cookies des de la configuració del teu navegador (Chrome, Firefox, Safari, Edge…), tot i que algunes funcions del web podrien veure's afectades.</p>
 ${btn('Configurar cookies')}
 <h2>5. Responsable i més informació</h2>
-<p>El responsable és ${TIT.nom}. Per a qualsevol dubte, escriu-nos a <a href="mailto:${TIT.email}">${TIT.email}</a>. Consulta també la nostra <a href="/politica-privacitat/?l=ca">política de privacitat</a>.</p>` },
+<p>El responsable és ${NOM_P} Per a qualsevol dubte, escriu-nos a <a href="mailto:${TIT.email}">${TIT.email}</a>. Consulta també la nostra <a href="/politica-privacitat/?l=ca">política de privacitat</a>.</p>` },
   es: { title: 'Política de cookies', html: `
 <p class="upd">Última actualización: ${TIT.actualitzat.es}</p>
 <p>Este sitio web, titularidad de ${TIT.nom}, utiliza almacenamiento técnico propio y, solo si das tu consentimiento, cookies de analítica de terceros. Aquí te explicamos cuáles son, para qué sirven y cómo puedes gestionarlas, de acuerdo con el artículo 22 de la LSSI-CE y el RGPD.</p>
@@ -35,12 +36,12 @@ ${tbl(['Nombre','Titular','Finalidad','Tipo','Duración'], [
 ])}
 <p>Las cookies de analítica solo se instalan si pulsas «Aceptar» en el banner. Mientras no lo hagas, o si pulsas «Rechazar», Google Analytics no se carga y no se instala ninguna cookie de analítica. No usamos cookies de publicidad ni de seguimiento entre sitios web.</p>
 <h2>3. Otros servicios de terceros que se cargan con el sitio</h2>
-<p>Para mostrar correctamente el sitio se cargan recursos de terceros que no instalan cookies pero reciben la dirección IP de tu dispositivo: las tipografías de Google Fonts (Google Ireland Limited) y, en la vista de mapa, la biblioteca Leaflet (unpkg.com) y los mosaicos de mapa de OpenStreetMap.</p>
+<p>Para mostrar correctamente el sitio se cargan recursos de terceros que no instalan cookies, pero reciben la dirección IP de tu dispositivo: las tipografías de Google Fonts (Google Ireland Limited) y, en la vista de mapa, la biblioteca Leaflet (unpkg.com) y los mosaicos de mapa de OpenStreetMap.</p>
 <h2>4. Cómo puedes gestionarlas</h2>
 <p>Puedes cambiar tu elección en cualquier momento desde el botón siguiente o con el enlace «Configurar cookies» del pie de página. También puedes borrar o bloquear las cookies desde la configuración de tu navegador (Chrome, Firefox, Safari, Edge…), aunque algunas funciones del sitio podrían verse afectadas.</p>
 ${btn('Configurar cookies')}
 <h2>5. Responsable y más información</h2>
-<p>El responsable es ${TIT.nom}. Para cualquier duda, escríbenos a <a href="mailto:${TIT.email}">${TIT.email}</a>. Consulta también nuestra <a href="/politica-privacitat/?l=es">política de privacidad</a>.</p>` },
+<p>El responsable es ${NOM_P} Para cualquier duda, escríbenos a <a href="mailto:${TIT.email}">${TIT.email}</a>. Consulta también nuestra <a href="/politica-privacitat/?l=es">política de privacidad</a>.</p>` },
   en: { title: 'Cookie policy', html: `
 <p class="upd">Last updated: ${TIT.actualitzat.en}</p>
 <p>This website, owned by ${TIT.nom}, uses its own technical storage and, only if you consent, third-party analytics cookies. Here we explain which ones they are, what they are for and how you can manage them, in accordance with Article 22 of the LSSI-CE and the GDPR.</p>
@@ -59,5 +60,5 @@ ${tbl(['Name','Owner','Purpose','Type','Duration'], [
 <p>You can change your choice at any time using the button below or the “Cookie settings” link in the footer. You can also delete or block cookies in your browser settings (Chrome, Firefox, Safari, Edge…), although some website features may be affected.</p>
 ${btn('Cookie settings')}
 <h2>5. Controller and more information</h2>
-<p>The controller is ${TIT.nom}. If you have any questions, write to us at <a href="mailto:${TIT.email}">${TIT.email}</a>. See also our <a href="/politica-privacitat/?l=en">privacy policy</a>.</p>` }
+<p>The controller is ${NOM_P} If you have any questions, write to us at <a href="mailto:${TIT.email}">${TIT.email}</a>. See also our <a href="/politica-privacitat/?l=en">privacy policy</a>.</p>` }
 };

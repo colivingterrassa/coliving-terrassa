@@ -1,6 +1,6 @@
 import { TIT } from '../data/legal.mjs';
 const f = (v, l) => v ? v : `<mark class="pend">[PENDENT: ${l}]</mark>`;
-const d = () => `<dl class="idt"><dt>@@1</dt><dd>${TIT.nom}</dd><dt>@@2</dt><dd>${f(TIT.nif,'NIF')}</dd><dt>@@3</dt><dd>${f(TIT.adreca,'domicili')}</dd><dt>@@4</dt><dd>${f(TIT.registre,'Registre Mercantil')}</dd><dt>@@5</dt><dd><a href="mailto:${TIT.email}">${TIT.email}</a> · ${TIT.tel}</dd><dt>@@6</dt><dd>${TIT.web}</dd></dl>`;
+const d = () => `<dl class="idt"><dt>@@1</dt><dd>${TIT.nom}</dd><dt>@@2</dt><dd>${f(TIT.nif,'NIF')}</dd><dt>@@3</dt><dd>${f(TIT.adreca,'domicili')}</dd>${TIT.registre ? `<dt>@@4</dt><dd>${TIT.registre}</dd>` : ''}<dt>@@5</dt><dd><a href="mailto:${TIT.email}">${TIT.email}</a> · ${TIT.tel}</dd><dt>@@6</dt><dd>${TIT.web}</dd></dl>`;
 const idt = (a) => d().replace(/@@(\d)/g, (_, n) => a[n - 1]);
 
 export const AVIS = {
