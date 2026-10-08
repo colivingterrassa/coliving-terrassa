@@ -111,7 +111,7 @@ export function buildLlms({ PISOS, HAB, FAQS }) {
   L.push('## Key facts', '');
   L.push(`- ${st.pisos} flats and ${st.hab} rooms in Terrassa (Barcelona): ${st.barris.join(', ')}.`);
   L.push(`- Monthly rent per room ranges from ${st.min} to ${st.max} euros; see the FAQ for what the price includes. Availability changes over time and is shown on the website.`);
-  L.push('- Rooms are rented for students (typical contract: academic year) and professionals; flats are managed directly by CoLiving Terrassa, with no agency fee.');
+  L.push('- Rooms are rented for students (6-month contract, extendable with no penalty) and professionals; flats are managed directly by CoLiving Terrassa, with no agency fee.');
   L.push('- Enquiries and visit requests are made through the forms on the website or by email.', '');
   L.push('## Flats', '');
   for (const p of PISOS) L.push(`- ${p.nom}: ${pisLine(p, 'en')}. ${p.desc.en}`);
