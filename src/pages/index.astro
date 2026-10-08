@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { PISOS } from '../data/pisos.mjs';
 import { HAB } from '../data/habitacions.mjs';
+import { SORTIDES } from '../data/sortides.mjs';
 import { REV } from '../data/resenyes.mjs';
 import { FAQS } from '../data/faqs.mjs';
 import { buildJsonLd, buildNoscript } from '../lib/seo.mjs';
@@ -78,7 +79,15 @@ for (const f of listImgs(path.join(FOTOS_DIR, 'resenyes'))) {
 
 const SEO_LD = buildJsonLd({ PISOS, HAB, FAQS });
 const SEO_NOSCRIPT = buildNoscript({ PISOS, HAB, FAQS });
-const DATA_JSON = JSON.stringify({ PISOS, HAB, REV, FAQS }).replace(/</g, '\\u003c');
+// Data de sortida prevista: només s'envia al navegador si és d'aquí a menys de ~7 mesos
+// (el navegador aplica la regla exacta de 6 mesos). Les més llunyanes no es publiquen.
+const _lim = new Date(); _lim.setMonth(_lim.getMonth() + 7);
+const _limISO = _lim.toISOString().slice(0, 10);
+const HAB_PUB = HAB.map(h => {
+  const s = SORTIDES[h.codi];
+  return (s && h.estat === 'ocupada' && s <= _limISO) ? { ...h, surt: s } : h;
+});
+const DATA_JSON = JSON.stringify({ PISOS, HAB: HAB_PUB, REV, FAQS }).replace(/</g, '\\u003c');
 const FOTOS_JSON = JSON.stringify({
   pisos: fotosPisos,
   habitacions: fotosHab,
@@ -1210,7 +1219,7 @@ ca:{
  pisos:"pisos",pis:"pis",aTerrassa:"a Terrassa",habs:"habitacions",hab:"habitació",
  lliures:"lliures",lliure:"lliure",completa:"Completa",desDe:"Des de",mes:"/mes",
  veureMes:"Veure habitacions",avisam:"Avisa'm",
- dispAra:"Disponible ara",dispDes:"Des del",ocupada:"Ocupada",
+ dispAra:"Disponible ara",dispDes:"Des del",ocupada:"Ocupada",ocupDes:"Ocupada · lliure des del",
  tornar:"Tornar al llistat",totsPisos:"Tots els pisos",
  sobrePis:"Sobre aquest pis",comoditats:"Comoditats de la vivenda",
  habsDisp:"Habitacions en aquest pis",ressPis:"Què en diuen els inquilins",
@@ -1295,7 +1304,7 @@ es:{
  pisos:"pisos",pis:"piso",aTerrassa:"en Terrassa",habs:"habitaciones",hab:"habitación",
  lliures:"libres",lliure:"libre",completa:"Completo",desDe:"Desde",mes:"/mes",
  veureMes:"Ver habitaciones",avisam:"Avísame",
- dispAra:"Disponible ahora",dispDes:"Desde el",ocupada:"Ocupada",
+ dispAra:"Disponible ahora",dispDes:"Desde el",ocupada:"Ocupada",ocupDes:"Ocupada · libre desde el",
  tornar:"Volver al listado",totsPisos:"Todos los pisos",
  sobrePis:"Sobre este piso",comoditats:"Comodidades de la vivienda",
  habsDisp:"Habitaciones en este piso",ressPis:"Qué dicen los inquilinos",
@@ -1380,7 +1389,7 @@ en:{
  pisos:"flats",pis:"flat",aTerrassa:"in Terrassa",habs:"rooms",hab:"room",
  lliures:"available",lliure:"available",completa:"Full",desDe:"From",mes:"/month",
  veureMes:"View rooms",avisam:"Notify me",
- dispAra:"Available now",dispDes:"From",ocupada:"Occupied",
+ dispAra:"Available now",dispDes:"From",ocupada:"Occupied",ocupDes:"Occupied · free from",
  tornar:"Back to listings",totsPisos:"All flats",
  sobrePis:"About this flat",comoditats:"Home amenities",
  habsDisp:"Rooms in this flat",ressPis:"What tenants say",
@@ -1432,14 +1441,26 @@ const preuDes=id=>{const l=lliuresDe(id);return l.length?Math.min(...l.map(h=>h.
 const preuMin=id=>{const l=habsDe(id).map(h=>h.preu);return l.length?Math.min(...l):null};
 const revsDe=id=>REV.filter(r=>r.pis===id);
 
+// Sortida prevista: només es mostra si és d'aquí a 6 mesos o menys.
+const sortidaVisible=h=>{
+  if(h.estat!=='ocupada'||!h.surt) return null;
+  const l=new Date(); l.setMonth(l.getMonth()+6);
+  if(h.surt>l.toISOString().slice(0,10)) return null;
+  const d=new Date(h.surt+'T12:00:00Z'); d.setUTCDate(d.getUTCDate()+1);
+  const lliure=d.toISOString().slice(0,10);
+  return lliure<=HOY?null:lliure;
+};
 function estatHab(h){
-  if(h.estat==='ocupada') return {c:'off',t:t('ocupada')};
+  if(h.estat==='ocupada'){const s=sortidaVisible(h); return s?{c:'soon',t:t('ocupDes')+' '+fd(s)}:{c:'off',t:t('ocupada')};}
   if(!h.des||h.des<=HOY)  return {c:'ok', t:t('dispAra')};
   return {c:'soon',t:t('dispDes')+' '+fd(h.des)};
 }
 function estatPis(id){
   const l=lliuresDe(id);
-  if(!l.length) return {c:'off',t:t('completa')};
+  if(!l.length){
+    const ss=habsDe(id).map(sortidaVisible).filter(Boolean).sort();
+    return ss.length?{c:'soon',t:t('dispDes')+' '+fd(ss[0])}:{c:'off',t:t('completa')};
+  }
   if(l.some(h=>!h.des||h.des<=HOY)) return {c:'ok',t:t('dispAra')};
   const prox=l.map(h=>h.des).sort()[0];
   return {c:'soon',t:t('dispDes')+' '+fd(prox)};
@@ -1607,7 +1628,7 @@ function obrirPis(id){
         <div class="pv__sec"><h3>${t('habsDisp')} <span style="font-family:var(--sans);font-size:.85rem;color:var(--muted);font-weight:400">· ${totes.length}</span></h3>
           <div class="rooms">${totes.map((h,i)=>{
             const e=estatHab(h), ok=!actius||habPassa(h,f);
-            return `<button class="room ${h.estat==='ocupada'?'room--off':''}" data-hab="${h.id}"
+            return `<button class="room ${e.c==='off'?'room--off':''}" data-hab="${h.id}"
               ${ok?'':'style="opacity:.4"'}>
               <div class="room__m">${coverHtml('habitacions', h.codi, i, esc(h.codi))}</div>
               <div class="room__b">
