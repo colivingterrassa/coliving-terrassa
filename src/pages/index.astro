@@ -115,22 +115,33 @@ window.ckLoadGA=function(){
   gtag('consent','update',{analytics_storage:'granted'});
   gtag('config','G-MXHGDY7B17');
 };
+/* Esdeveniments de conversió: només s'envien si l'usuari ha acceptat les cookies d'anàlisi */
+window.ctTrack=function(n,p){try{if(window.__gaOn&&window['ga-disable-G-MXHGDY7B17']!==true)gtag('event',n,p||{});}catch(e){}};
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('a[href]'); if(!a) return;
+  var h=a.getAttribute('href')||'';
+  if(h.indexOf('tel:')===0) ctTrack('click_phone',{link_url:h});
+  else if(h.indexOf('mailto:')===0) ctTrack('click_email',{link_url:h});
+  else if(h.indexOf('instagram.com')>-1) ctTrack('click_instagram',{link_url:h});
+  else if(h.indexOf('g.page/r/')>-1) ctTrack('click_google_review',{link_url:h});
+  else if(h.indexOf('google.com/maps?cid=')>-1) ctTrack('click_google_profile',{link_url:h});
+});
 try{var __o=JSON.parse(localStorage.getItem('ct_consent')||'null');
 if(__o&&__o.v==='all'&&Date.now()-__o.t<365*864e5){window.ckLoadGA();}}catch(e){}
 </script>
-<title>CoLiving Terrassa · Lloguer d'habitacions per a estudiants i professionals</title>
-<meta name="description" content="Lloguer d'habitacions a Terrassa per a estudiants i professionals. Pisos gestionats directament al Centre, Sant Pere i Ca n'Aurell.">
+<title>Habitaciones en alquiler en Terrassa | CoLiving Terrassa</title>
+<meta name="description" content="Habitaciones en pisos compartidos en Terrassa para estudiantes y profesionales. Desde 350 €/mes, contrato de 6 meses y sin comisión de agencia.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoLiving Terrassa">
 <meta property="og:url" content="https://www.colivingterrassa.com/">
-<meta property="og:title" content="CoLiving Terrassa · Lloguer d'habitacions per a estudiants i professionals">
-<meta property="og:description" content="Pisos gestionats directament al Centre, Sant Pere i Ca n'Aurell. Espais que cuidem al detall.">
+<meta property="og:title" content="Habitaciones en alquiler en Terrassa | CoLiving Terrassa">
+<meta property="og:description" content="Habitaciones en pisos compartidos en Terrassa para estudiantes y profesionales. Pisos gestionados directamente, sin comisión de agencia.">
 <meta property="og:image" content="https://www.colivingterrassa.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CoLiving Terrassa · Lloguer d'habitacions per a estudiants i professionals">
-<meta name="twitter:description" content="Pisos gestionats directament al Centre, Sant Pere i Ca n'Aurell. Espais que cuidem al detall.">
+<meta name="twitter:title" content="Habitaciones en alquiler en Terrassa | CoLiving Terrassa">
+<meta name="twitter:description" content="Habitaciones en pisos compartidos en Terrassa para estudiantes y profesionales. Pisos gestionados directamente, sin comisión de agencia.">
 <meta name="twitter:image" content="https://www.colivingterrassa.com/og-image.jpg">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -317,6 +328,10 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacin
 
 /* ---------- GRAELLA ---------- */
 .grid{display:grid;gap:30px 26px;padding-bottom:64px;grid-template-columns:repeat(3,1fr)}
+/* Espai reservat mentre JS no ha pintat la llista (evita que les seccions de sota es moguin: CLS) */
+.grid--pre{min-height:1900px}
+@media(max-width:1000px){.grid--pre{min-height:2600px}}
+@media(max-width:640px){.grid--pre{min-height:4800px}}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.grid{grid-template-columns:1fr;gap:26px}}
 
@@ -781,7 +796,7 @@ select:focus-visible,.card:focus-visible,.room:focus-visible,[tabindex]:focus-vi
         <option value="disp" data-i="soDisp"></option>
       </select>
     </div>
-    <section class="grid" id="grid"></section>
+    <section class="grid grid--pre" id="grid"></section>
     <div class="empty" id="empty" hidden>
       <h3 data-i="emH"></h3><p data-i="emP"></p>
       <button class="btn" onclick="document.getElementById('bRst').click()" data-i="chRst2"></button>
@@ -1549,6 +1564,7 @@ function aplica(){
     : t('emH');
   $('#empty').hidden = rows.length>0 || VISTA==='map';
   $('#grid').hidden  = VISTA==='map';
+  $('#grid').classList.remove('grid--pre');
   $('#grid').innerHTML=rows.map((p,i)=>{
     const e=estatPis(p.id), nl=lliuresDe(p.id).length, pd=preuDes(p.id);
     return `<button class="card ${nl?'':'card--off'}" data-pis="${p.id}" style="animation-delay:${Math.min(i,8)*35}ms">
@@ -1877,7 +1893,15 @@ function enviaFormulari(payload){
     method:'POST',
     headers:{'Content-Type':'application/json',Accept:'application/json'},
     body:JSON.stringify(Object.assign({access_key:WEB3FORMS_KEY},payload))
-  }).then(r=>r.json()).then(j=>!!j.success).catch(()=>false);
+  }).then(r=>r.json()).then(j=>{
+    const ok=!!j.success;
+    if(ok){
+      // Només dades no personals: tipus de formulari, habitació i pis
+      const tipus={'Solicitud de información (inquilino)':'habitacio','Solicitud de información (piso general)':'pis','Consulta general':'general','Formulario de propietarios':'propietari'}[payload.formulari]||'altre';
+      window.ctTrack&&ctTrack('generate_lead',{lead_type:tipus,room_code:payload.habitacio&&payload.habitacio!=='—'?payload.habitacio:undefined,flat:payload.pis&&payload.pis!=='—'?payload.pis:undefined});
+    }
+    return ok;
+  }).catch(()=>false);
 }
 const sErr=(el,m)=>{el.textContent=m;el.hidden=false};
 const tanca=()=>{$('#modal').hidden=true;document.body.style.overflow=''};
