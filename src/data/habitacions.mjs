@@ -192,7 +192,7 @@ export const HAB=[
   d:{ca:'Habitació doble de 13 m² amb bany privat.',
      es:'Habitación doble de 13 m² con baño privado.',
      en:'Double room of 13 m² with a private bathroom.'}}
- ,{id:49,pis:14,codi:'NOR-1',m2:10,bany:'privat',tipus:'doble',preu:600,estat:'lliure',des:'2027-01-01',
+ ,{id:49,pis:14,codi:'NOR-1',m2:10,bany:'privat',tipus:'doble',preu:600,estat:'ocupada',des:null,
   d:{ca:'Habitació doble de 10 m² tipus suite, amb bany privat i pati interior.',
      es:'Habitación doble de 10 m² tipo suite, con baño privado y patio interior.',
      en:'Double suite room of 10 m² with a private bathroom, overlooking the interior courtyard.'}}
