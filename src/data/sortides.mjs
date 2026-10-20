@@ -3,7 +3,7 @@
 // La web només en mostra el detall quan la sortida és d'aquí a 6 mesos o menys;
 // les dates més llunyanes no s'envien al navegador (vegeu index.astro).
 export const SORTIDES = {
-  'PAS-1': '2027-05-30',
+  'PAS-1': '2026-11-30',
   'PAS-2': '2027-05-30',
   'PAS-3': '2027-05-30',
   'PAS-4': '2026-11-30',
@@ -18,7 +18,7 @@ export const SORTIDES = {
   'FON-3': '2027-06-30',
   'FON-4': '2027-06-30',
   'BAR-1': '2027-01-30',
-  'BAR-2': '2027-06-30',
+  'BAR-2': '2027-04-30',
   'BAR-3': '2027-04-30',
   'BAR-4': '2026-12-30',
   'PASS-1': '2027-06-30',
@@ -34,7 +34,7 @@ export const SORTIDES = {
   'UNI-4': '2027-06-30',
   'UNI-5': '2027-06-30',
   'UNII-1': '2027-06-30',
-  'UNII-2': '2026-10-30',
+  'UNII-2': '2027-04-30',
   'ESP-1': '2027-06-30',
   'ESP-2': '2027-06-30',
   'ESP-3': '2027-06-30',
