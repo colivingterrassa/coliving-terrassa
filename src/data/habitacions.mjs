@@ -76,7 +76,7 @@ export const HAB=[
   d:{ca:'Habitació doble de 15 m² amb bany privat.',
      es:'Habitación doble de 15 m² con baño privado.',
      en:'Double room of 15 m² with a private bathroom.'}},
- {id:20,pis:4,codi:'CAT-6',m2:9,bany:'compartit',tipus:'individual',preu:350,estat:'ocupada',des:null,
+ {id:20,pis:4,codi:'CAT-6',m2:9,bany:'compartit',tipus:'individual',preu:400,estat:'ocupada',des:null,
   d:{ca:'Habitació individual de 9 m² amb bany compartit.',
      es:'Habitación individual de 9 m² con baño compartido.',
      en:'Single room of 9 m² with a shared bathroom.'}},
