@@ -1,0 +1,33 @@
+---
+import Aterrizaje from '../components/Aterrizaje.astro';
+import { PISOS } from '../data/pisos.mjs';
+import { HAB } from '../data/habitacions.mjs';
+import { urlPis } from '../lib/paginas.mjs';
+
+const habs = HAB.filter(h => h.estat !== 'ocupada').sort((a, b) => a.preu - b.preu || a.codi.localeCompare(b.codi));
+const min = habs.length ? habs[0].preu : Math.min(...HAB.map(h => h.preu));
+const barris = [...new Set(PISOS.map(p => p.barri))];
+const porBarrio = barris.map(b => `<b>${b}:</b> ` + PISOS.filter(p => p.barri === b).map(p => `<a href="${urlPis(p.id)}">${p.nom}</a>`).join(', '));
+const sections = [
+  { h: 'Una habitación para todo el curso, sin sorpresas',
+    p: ['Alquilamos habitaciones en pisos compartidos pensados para estudiantes: amuebladas, con wifi de fibra y zonas comunes amplias donde estudiar, cocinar y convivir. El contrato es de <b>6 meses</b> y se puede <b>prorrogar sin penalización</b>, así que se ajusta bien a un semestre, a un curso completo o a una estancia de intercambio.',
+        'Gestionamos los pisos directamente, por eso <b>no cobramos comisión de agencia</b> ni gastos de entrada. Para entrar solo pedimos una mensualidad de fianza (depositada en el INCASÒL, como marca la ley) y una mensualidad por adelantado. Y una vez firmado el contrato te damos la documentación para empadronarte en Terrassa.'] },
+  { h: 'Estudiar en Terrassa',
+    p: ['Terrassa acoge el campus de la UPC, con la ESEIAAT (ingenierías industrial, aeroespacial y audiovisual), y tiene estación de FGC (línea S1) y de Renfe (R4) con conexión a Barcelona, además de red de autobús urbano. Si dudas entre barrios, dinos dónde estudias y te recomendamos el piso que mejor te encaja.'],
+    ul: porBarrio }
+];
+---
+<Aterrizaje
+  title={`Habitaciones para estudiantes en Terrassa desde ${min} €/mes | CoLiving Terrassa`}
+  description={`Alquila una habitación en un piso compartido en Terrassa para estudiantes: contrato de 6 meses prorrogable, sin comisión de agencia y desde ${min} €/mes.`}
+  path="/habitaciones-estudiantes-terrassa/"
+  eyebrow="Para estudiantes · Terrassa"
+  h1="Habitaciones para estudiantes en Terrassa"
+  lead={`Habitaciones en pisos compartidos de calidad, con contrato de 6 meses prorrogable y sin comisión de agencia. Desde <b>${min} €/mes</b>.`}
+  sections={sections}
+  tablaTitulo="Habitaciones disponibles para estudiantes"
+  tablaIntro="Estas son las habitaciones libres o que se liberan próximamente, ordenadas por precio."
+  habs={habs}
+  faqIdx={[0, 1, 2, 3, 4, 5]}
+  otra={{ href: '/habitaciones-profesionales-terrassa/', txt: '¿Buscas habitación como profesional? Mira las habitaciones para profesionales' }}
+/>

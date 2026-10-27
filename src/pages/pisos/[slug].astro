@@ -1,0 +1,118 @@
+---
+// Una pàgina estàtica per pis (en castellà), generada a partir de src/data/*.mjs i public/fotos.
+import Shell from '../../components/Shell.astro';
+import { PISOS } from '../../data/pisos.mjs';
+import { HAB } from '../../data/habitacions.mjs';
+import { REV } from '../../data/resenyes.mjs';
+import { FAQS } from '../../data/faqs.mjs';
+import { ENTORN } from '../../data/entorn.mjs';
+import { PIS_SLUGS } from '../../lib/fotos.mjs';
+import { SITE, EMAIL, PHONE, PHONE_FMT } from '../../lib/seo.mjs';
+import { urlPis, fotoMini, habsDe, fotosDe, nomCurt, estatHab, preuDesde, preuMinTotal, ESTAT_JS } from '../../lib/paginas.mjs';
+
+export function getStaticPaths() {
+  return PISOS.map(p => ({ params: { slug: PIS_SLUGS[p.id] }, props: { id: p.id } }));
+}
+const { id } = Astro.props;
+const p = PISOS.find(x => x.id === id);
+const habs = habsDe(id);
+const nl = habs.filter(h => h.estat !== 'ocupada').length;
+const desde = preuDesde(id) ?? preuMinTotal(id);
+const fotos = fotosDe(id);
+const altDe = f => {
+  const n = decodeURIComponent(f.split('/').pop()).toLowerCase();
+  const t = /menjador/.test(n) ? 'Comedor' : /cuina/.test(n) ? 'Cocina' : /bany/.test(n) ? 'Baño' : /terrassa/.test(n) ? 'Terraza' : /balc/.test(n) ? 'Balcón' : /pati/.test(n) ? 'Patio' : /sal[oó]/.test(n) ? 'Salón' : 'Zona común';
+  return `${t} del piso ${p.nom} en ${p.barri}, Terrassa`;
+};
+const galeria = fotos.slice(0, 5);
+const revs = REV.filter(r => r.pis === id).slice(0, 3);
+const ent = ENTORN[p.barri];
+const tipoTxt = { individual: 'Individual', doble: 'Doble' };
+const nHab = p.nhab;
+const title = `Habitaciones en alquiler en ${p.nom} (${p.barri}), Terrassa | CoLiving Terrassa`;
+const description = `${nHab} ${nHab === 1 ? 'habitación' : 'habitaciones'} en un piso compartido de ${p.m2} m² en ${p.barri}, Terrassa. Desde ${desde} €/mes, contrato de 6 meses y sin comisión de agencia.`;
+const faqs = FAQS.es.slice(0, 4);
+const pathPage = urlPis(id);
+const otros = PISOS.filter(x => x.id !== id);
+const ld = [
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Pisos', item: SITE + '/#llistat' },
+    { '@type': 'ListItem', position: 3, name: p.nom, item: SITE + pathPage } ] },
+  { '@type': 'Apartment', name: `Piso ${p.nom}`, description: p.desc.es, url: SITE + pathPage,
+    address: { '@type': 'PostalAddress', streetAddress: nomCurt(p), addressLocality: 'Terrassa', addressRegion: 'Barcelona', addressCountry: 'ES' },
+    geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng },
+    ...(p.m2 ? { floorSize: { '@type': 'QuantitativeValue', value: p.m2, unitCode: 'MTK' } } : {}),
+    numberOfRooms: p.nhab, ...(p.nbany ? { numberOfBathroomsTotal: p.nbany } : {}),
+    image: galeria.slice(0, 3).map(f => SITE + f),
+    amenityFeature: (p.amen?.es || []).map(a => ({ '@type': 'LocationFeatureSpecification', name: a, value: true })) }
+];
+---
+<Shell title={title} description={description} path={pathPage} ld={ld}>
+  <p class="crumb"><a href="/">Inicio</a> › <a href="/#llistat">Pisos</a> › {p.nom}</p>
+  <p class="eyebrow">{p.barri} · Terrassa</p>
+  <h1>Habitaciones en alquiler en el piso {p.nom}, {p.barri} (Terrassa)</h1>
+  <p class="lead">{nHab === 1 ? 'Una habitación' : `${nHab} habitaciones`} en un piso compartido de {p.m2} m² en {nomCurt(p)}. {nl > 0 ? `Hay ${nl} ${nl === 1 ? 'habitación libre' : 'habitaciones libres'} desde ${desde} €/mes.` : `Ahora mismo está completo; consulta las próximas fechas de disponibilidad más abajo.`}</p>
+  <div class="kpis">
+    <span class="kpi"><b>{nHab}</b> {nHab === 1 ? 'habitación' : 'habitaciones'}</span>
+    <span class="kpi"><b>{p.nbany}</b> {p.nbany === 1 ? 'baño' : 'baños'}</span>
+    <span class="kpi"><b>{p.m2}</b> m²</span>
+    <span class="kpi">Desde <b>{desde} €</b>/mes</span>
+    <span class="kpi">Contrato de <b>6 meses</b></span>
+  </div>
+
+  {galeria.length > 0 && (
+    <div class="gal">
+      {galeria.map((f, i) => <a href={f} target="_blank" rel="noopener"><img src={fotoMini(f)} alt={altDe(f)} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" width="900" height="600"></a>)}
+    </div>
+  )}
+
+  <h2>Sobre el piso</h2>
+  <p>{p.desc.es}</p>
+  {p.amen?.es?.length > 0 && (<ul class="ll">{p.amen.es.map(a => <li>{a}</li>)}</ul>)}
+
+  <h2>Habitaciones y precios</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Habitación</th><th>Tipo</th><th>Superficie</th><th>Baño</th><th>Estado</th><th>Precio</th></tr></thead>
+    <tbody>
+      {habs.map(h => { const e = estatHab(h); return (
+        <tr>
+          <td><b>{h.codi}</b></td>
+          <td>{tipoTxt[h.tipus] || h.tipus}</td>
+          <td>{h.m2} m²</td>
+          <td>{h.bany === 'privat' ? 'Privado' : 'Compartido'}</td>
+          <td><span class={'bdg bdg--' + e.c} data-st={h.estat === 'ocupada' ? 'ocupada' : 'lliure'} data-des={e.des || ''} data-surt={e.surt || ''}>{e.t}</span></td>
+          <td class="pr">{h.preu} €/mes</td>
+        </tr>); })}
+    </tbody>
+  </table></div>
+  <p style="font-size:.88rem">El precio mensual no incluye los suministros (agua, luz y gas), que se pagan con una cuota fija. Más detalles en las <a href="/#faqs">preguntas frecuentes</a>.</p>
+
+  {ent && (<>
+    <h2>El barrio: {p.barri}</h2>
+    <div class="vibe"><p>{ent.vibe.es}</p></div>
+  </>)}
+
+  {revs.length > 0 && (<>
+    <h2>Opiniones de inquilinos</h2>
+    {revs.map(r => <blockquote class="rev"><p>«{r.t.es}»</p><cite>{r.n} · {r.loc.es} · {'★'.repeat(r.r)}</cite></blockquote>)}
+  </>)}
+
+  <h2>Condiciones</h2>
+  {faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}
+
+  <div class="box">
+    <h2>¿Quieres ver el piso {p.nom}?</h2>
+    <p>Hacemos visitas presenciales de lunes a viernes y, si estás fuera de Terrassa, una videollamada en directo para enseñarte la habitación y las zonas comunes. Respondemos en menos de 24 horas laborables.</p>
+    <div class="acts">
+      <a class="btn btn--acc" href={'/?pis=' + id}>Solicitar información</a>
+      <a class="btn" href={'tel:' + PHONE}>Llamar al {PHONE_FMT}</a>
+      <a class="btn btn--o" href={'mailto:' + EMAIL}>Escribir un email</a>
+    </div>
+  </div>
+
+  <h2>Otros pisos en Terrassa</h2>
+  <ul class="lst">{otros.map(o => <li><a href={urlPis(o.id)}>{o.nom} · {o.barri}</a></li>)}</ul>
+  <p style="margin-top:10px"><a href="/habitaciones-estudiantes-terrassa/">Habitaciones para estudiantes</a> · <a href="/habitaciones-profesionales-terrassa/">Habitaciones para profesionales</a></p>
+  <script is:inline set:html={ESTAT_JS}></script>
+</Shell>

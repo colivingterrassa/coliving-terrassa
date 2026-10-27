@@ -1,0 +1,70 @@
+---
+// Plantilla de les pàgines d'aterratge per públic (estudiants / professionals). Contingut propi a cada pàgina.
+import Shell from './Shell.astro';
+import { PISOS } from '../data/pisos.mjs';
+import { HAB } from '../data/habitacions.mjs';
+import { FAQS } from '../data/faqs.mjs';
+import { SITE, EMAIL, PHONE, PHONE_FMT } from '../lib/seo.mjs';
+import { urlPis, estatHab, ESTAT_JS } from '../lib/paginas.mjs';
+
+const { title, description, path, eyebrow, h1, lead, sections = [], tablaTitulo, tablaIntro, habs = [], faqIdx = [0, 1, 2, 3], otra } = Astro.props;
+const pis = id => PISOS.find(p => p.id === id);
+const tipoTxt = { individual: 'Individual', doble: 'Doble' };
+const faqs = faqIdx.map(i => FAQS.es[i]).filter(Boolean);
+const ld = [
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE + '/' },
+    { '@type': 'ListItem', position: 2, name: h1, item: SITE + path } ] },
+  { '@type': 'FAQPage', inLanguage: 'es', mainEntity: faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
+];
+---
+<Shell title={title} description={description} path={path} ld={ld}>
+  <p class="crumb"><a href="/">Inicio</a> › {h1}</p>
+  <p class="eyebrow">{eyebrow}</p>
+  <h1>{h1}</h1>
+  <p class="lead" set:html={lead}></p>
+
+  {sections.map(s => (<>
+    <h2>{s.h}</h2>
+    {s.p.map(t => <p set:html={t}></p>)}
+    {s.ul && <ul class="ll">{s.ul.map(t => <li set:html={t}></li>)}</ul>}
+  </>))}
+
+  <h2>{tablaTitulo}</h2>
+  <p>{tablaIntro}</p>
+  {habs.length > 0 ? (
+    <div class="tw"><table>
+      <thead><tr><th>Habitación</th><th>Piso</th><th>Tipo</th><th>Baño</th><th>Estado</th><th>Precio</th></tr></thead>
+      <tbody>
+        {habs.map(h => { const e = estatHab(h); const pp = pis(h.pis); return (
+          <tr>
+            <td><b>{h.codi}</b> · {h.m2} m²</td>
+            <td><a href={urlPis(h.pis)}>{pp.nom} · {pp.barri}</a></td>
+            <td>{tipoTxt[h.tipus] || h.tipus}</td>
+            <td>{h.bany === 'privat' ? 'Privado' : 'Compartido'}</td>
+            <td><span class={'bdg bdg--' + e.c} data-st={h.estat === 'ocupada' ? 'ocupada' : 'lliure'} data-des={e.des || ''} data-surt={e.surt || ''}>{e.t}</span></td>
+            <td class="pr">{h.preu} €/mes</td>
+          </tr>); })}
+      </tbody>
+    </table></div>
+  ) : (<p><b>Ahora mismo no tenemos habitaciones libres.</b> Escríbenos y te avisamos cuando haya disponibilidad.</p>)}
+  <p style="font-size:.88rem">El precio mensual no incluye los suministros (agua, luz y gas), que se pagan con una cuota fija. El estado de las habitaciones se actualiza con frecuencia; si una fecha no te encaja, escríbenos.</p>
+
+  <h2>Preguntas frecuentes</h2>
+  {faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}
+
+  <div class="box">
+    <h2>Cuéntanos qué necesitas</h2>
+    <p>Hacemos visitas presenciales de lunes a viernes y, si estás fuera de Terrassa, una videollamada en directo. Respondemos en menos de 24 horas laborables.</p>
+    <div class="acts">
+      <a class="btn btn--acc" href="/#llistat">Ver todas las habitaciones</a>
+      <a class="btn" href={'tel:' + PHONE}>Llamar al {PHONE_FMT}</a>
+      <a class="btn btn--o" href={'mailto:' + EMAIL}>Escribir un email</a>
+    </div>
+  </div>
+
+  <h2>Nuestros pisos en Terrassa</h2>
+  <ul class="lst">{PISOS.map(o => <li><a href={urlPis(o.id)}>{o.nom} · {o.barri}</a></li>)}</ul>
+  <p style="margin-top:10px"><a href={otra.href}>{otra.txt}</a></p>
+  <script is:inline set:html={ESTAT_JS}></script>
+</Shell>

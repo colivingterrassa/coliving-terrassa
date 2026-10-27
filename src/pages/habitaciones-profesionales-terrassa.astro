@@ -1,0 +1,34 @@
+---
+import Aterrizaje from '../components/Aterrizaje.astro';
+import { PISOS } from '../data/pisos.mjs';
+import { HAB } from '../data/habitacions.mjs';
+import { urlPis } from '../lib/paginas.mjs';
+
+const habs = HAB.filter(h => h.estat !== 'ocupada').sort((a, b) => a.preu - b.preu || a.codi.localeCompare(b.codi));
+const min = habs.length ? habs[0].preu : Math.min(...HAB.map(h => h.preu));
+const priv = habs.filter(h => h.bany === 'privat').length;
+const barris = [...new Set(PISOS.map(p => p.barri))];
+const porBarrio = barris.map(b => `<b>${b}:</b> ` + PISOS.filter(p => p.barri === b).map(p => `<a href="${urlPis(p.id)}">${p.nom}</a>`).join(', '));
+const sections = [
+  { h: 'Una habitación lista para entrar a vivir',
+    p: ['Si te trasladas a Terrassa por trabajo, por unos meses o por tiempo indefinido, tenemos habitaciones amuebladas en pisos compartidos con wifi de fibra y zonas comunes amplias. El contrato es de <b>6 meses</b> y se puede <b>prorrogar sin penalización</b>, una fórmula flexible para destinos temporales, nuevas incorporaciones y cambios de ciudad.',
+        `Gestionamos los pisos directamente: <b>sin comisión de agencia</b> ni gastos de entrada, una mensualidad de fianza depositada en el INCASÒL y una mensualidad por adelantado. Tenemos habitaciones individuales y dobles${priv > 0 ? ', y ahora mismo hay habitaciones con <b>baño privado</b> entre las disponibles' : ''}.`] },
+  { h: 'Terrassa para profesionales',
+    p: ['Terrassa cuenta con dos grandes hospitales, el Hospital Universitari MútuaTerrassa y el Hospital de Terrassa, además de un tejido empresarial e industrial importante y estaciones de FGC (S1) y Renfe (R4) con conexión directa a Barcelona. Dinos dónde trabajas y te recomendamos el piso que te queda mejor.'],
+    ul: porBarrio }
+];
+---
+<Aterrizaje
+  title={`Habitaciones para profesionales en Terrassa desde ${min} €/mes | CoLiving Terrassa`}
+  description={`Habitaciones en pisos compartidos en Terrassa para profesionales y personal sanitario: contrato de 6 meses prorrogable, sin comisión de agencia y desde ${min} €/mes.`}
+  path="/habitaciones-profesionales-terrassa/"
+  eyebrow="Para profesionales · Terrassa"
+  h1="Habitaciones para profesionales en Terrassa"
+  lead={`Habitaciones amuebladas en pisos compartidos, con contrato de 6 meses prorrogable y sin comisión de agencia. Desde <b>${min} €/mes</b>.`}
+  sections={sections}
+  tablaTitulo="Habitaciones disponibles"
+  tablaIntro="Estas son las habitaciones libres o que se liberan próximamente, ordenadas por precio."
+  habs={habs}
+  faqIdx={[0, 1, 2, 3, 4, 5]}
+  otra={{ href: '/habitaciones-estudiantes-terrassa/', txt: '¿Eres estudiante? Mira las habitaciones para estudiantes' }}
+/>

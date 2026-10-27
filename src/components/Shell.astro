@@ -1,0 +1,159 @@
+---
+// Estructura comuna de les pàgines estàtiques en castellà (estudiants, professionals i una per pis).
+import { SITE, NOINDEX, EMAIL, PHONE, PHONE_FMT, INSTAGRAM } from '../lib/seo.mjs';
+import { GA_SNIPPET } from '../lib/ga.mjs';
+import { PISOS } from '../data/pisos.mjs';
+import { urlPis } from '../lib/paginas.mjs';
+
+const { title, description, path, ld = [], ogImage = SITE + '/og-image.jpg' } = Astro.props;
+const canon = SITE + path;
+const LD = ld.length ? JSON.stringify({ '@context': 'https://schema.org', '@graph': ld }).replace(/</g, '\\u003c') : '';
+const COOKIE_JS = String.raw`
+(function(){
+  var K='ct_consent';
+  function get(){try{var o=JSON.parse(localStorage.getItem(K)||'null');if(o&&(o.v==='all'||o.v==='none')&&Date.now()-o.t<365*864e5)return o.v;}catch(e){}return null;}
+  function clean(){var p=location.hostname.split('.'),d=[''];for(var i=0;i<p.length-1;i++){var h=p.slice(i).join('.');d.push('; domain='+h,'; domain=.'+h);}
+    document.cookie.split(';').forEach(function(c){var n=c.split('=')[0].trim();
+      if(n==='_ga'||n.indexOf('_ga_')===0||n==='_gid'||n.indexOf('_gat')===0){d.forEach(function(x){document.cookie=n+'=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'+x;});}});}
+  function set(v){try{localStorage.setItem(K,JSON.stringify({v:v,t:Date.now()}));}catch(e){}
+    if(v==='all'){window.ckLoadGA&&ckLoadGA();}else{window['ga-disable-G-MXHGDY7B17']=true;window.gtag&&gtag('consent','update',{analytics_storage:'denied'});clean();}
+    document.getElementById('ck').hidden=true;}
+  if(get()===null){document.getElementById('ck').hidden=false;}
+  document.getElementById('ckY').onclick=function(){set('all');};
+  document.getElementById('ckN').onclick=function(){set('none');};
+})();
+`;
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script is:inline set:html={GA_SNIPPET}></script>
+<title>{title}</title>
+<meta name="description" content={description}>
+{NOINDEX && <meta name="robots" content="noindex, nofollow">}
+<link rel="canonical" href={canon}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoLiving Terrassa">
+<meta property="og:locale" content="es_ES">
+<meta property="og:url" content={canon}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content={ogImage}>
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+{LD && <script is:inline type="application/ld+json" set:html={LD}></script>}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+<style is:global>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+:root{--navy:#1B2B3A;--navy-2:#24384B;--ink:#1F2A33;--ink-2:#4C5C69;--muted:#7E8C99;--line:#DFE4E9;--bg:#fff;--bg-2:#F7F9FA;--bg-3:#EFF3F6;--accent:#B06E3B;--accent-2:#94592C;--blue:#2E6F9E;--ok:#2E7D5B;--ok-bg:#E8F3ED;--warn:#9A6B1F;--warn-bg:#FBF2E2;--off:#8A949C;--off-bg:#F0F2F4;--r:6px;--sh:0 1px 2px rgba(27,43,58,.05);--sh-2:0 4px 16px rgba(27,43,58,.10);--serif:'Source Serif 4',Georgia,serif;--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--accent-2);text-underline-offset:2px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.22;letter-spacing:-.01em;color:var(--navy)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+@media(max-width:600px){.wrap{padding:0 18px}}
+.hd{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.hd__in{display:flex;align-items:center;justify-content:space-between;gap:18px;height:66px}
+.hd img{height:32px;width:auto}
+.nav{display:flex;gap:22px;font-size:.88rem;font-weight:500}
+.nav a{color:var(--ink-2);text-decoration:none}.nav a:hover{color:var(--navy)}
+.cta,.btn{display:inline-block;background:var(--navy);color:#fff;font-size:.84rem;font-weight:600;padding:11px 20px;border-radius:var(--r);text-decoration:none;border:0;cursor:pointer;font-family:inherit}
+.cta:hover,.btn:hover{background:var(--navy-2)}
+.btn--acc{background:var(--accent)}.btn--acc:hover{background:var(--accent-2)}
+.btn--o{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn--o:hover{background:var(--bg-2)}
+@media(max-width:760px){.nav{display:none}}
+main{padding:30px 0 64px}
+.crumb{font-size:.82rem;color:var(--muted);margin-bottom:18px}
+.crumb a{color:var(--ink-2)}
+.eyebrow{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:600;margin-bottom:10px}
+h1{font-size:2.1rem;margin-bottom:12px}
+h2{font-size:1.45rem;margin:40px 0 12px}
+h3{font-size:1.1rem;margin:22px 0 6px}
+p{margin:0 0 14px;color:var(--ink-2)}
+.lead{font-size:1.06rem;max-width:68ch}
+ul.ll{margin:0 0 14px 20px;color:var(--ink-2)}ul.ll li{margin-bottom:6px}
+.kpis{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.kpi{font-size:.82rem;border:1px solid var(--line);background:var(--bg-2);color:var(--ink-2);padding:5px 12px;border-radius:99px}
+.kpi b{color:var(--navy)}
+.gal{display:grid;grid-template-columns:2fr 1fr 1fr;grid-auto-rows:150px;gap:8px;margin:22px 0}
+.gal a{display:block;background:var(--bg-3);border-radius:var(--r);overflow:hidden}
+.gal a:first-child{grid-row:span 2}
+.gal img{width:100%;height:100%;object-fit:cover}
+@media(max-width:700px){.gal{grid-template-columns:1fr 1fr;grid-auto-rows:120px}.gal a:first-child{grid-column:span 2;grid-row:span 1;height:210px}}
+.tw{overflow-x:auto;margin:8px 0 14px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:11px 10px;text-align:left;vertical-align:middle;color:var(--ink-2)}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+td b{color:var(--navy)}
+td.pr{white-space:nowrap;font-weight:600;color:var(--navy)}
+.bdg{display:inline-block;font-size:.74rem;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.bdg--ok{color:var(--ok);background:var(--ok-bg)}.bdg--soon{color:var(--warn);background:var(--warn-bg)}.bdg--off{color:var(--off);background:var(--off-bg)}
+.rev{border-left:3px solid var(--accent);background:var(--bg-2);padding:14px 18px;margin:0 0 14px;border-radius:0 var(--r) var(--r) 0}
+.rev p{margin:0 0 6px;color:var(--ink)}.rev cite{font-style:normal;font-size:.84rem;color:var(--muted)}
+.vibe{background:var(--bg-2);border-left:3px solid var(--accent);padding:15px 18px;border-radius:0 var(--r) var(--r) 0}
+.vibe p{margin:0}
+.box{border:1px solid var(--line);background:var(--bg-2);border-radius:10px;padding:24px 26px;margin:36px 0 0}
+.box h2{margin:0 0 8px;font-size:1.3rem}
+.box .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+details{border-bottom:1px solid var(--line);padding:12px 0}
+summary{cursor:pointer;font-weight:600;color:var(--navy)}
+details p{margin:8px 0 0}
+.lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 22px;list-style:none;margin:0 0 6px}
+.lst a{color:var(--ink-2)}
+footer{border-top:1px solid var(--line);background:var(--bg-2);padding:34px 0 26px;font-size:.88rem;color:var(--muted)}
+footer h4{font-family:var(--sans);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px}
+footer a{color:var(--ink-2);text-decoration:none}footer a:hover{text-decoration:underline}
+.ft__g{display:grid;grid-template-columns:2fr 1.2fr 1.2fr;gap:28px}
+@media(max-width:760px){.ft__g{grid-template-columns:1fr}}
+.ft__b{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+.ck{position:fixed;left:16px;right:16px;bottom:16px;max-width:760px;margin:0 auto;z-index:120;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px rgba(27,43,58,.22);padding:18px 20px;display:flex;align-items:center;gap:18px}
+.ck p{margin:0;font-size:.84rem;line-height:1.55}.ck a{color:var(--blue);text-decoration:underline}
+.ck__b{display:flex;gap:10px;flex-shrink:0}.ck__b .btn{white-space:nowrap}
+@media(max-width:640px){.ck{flex-direction:column;align-items:stretch;gap:14px;left:10px;right:10px;bottom:10px}.ck__b .btn{flex:1}h1{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap hd__in">
+  <a href="/" aria-label="CoLiving Terrassa, inicio"><img src="/logo.svg" alt="CoLiving Terrassa" width="150" height="32"></a>
+  <nav class="nav" aria-label="Principal">
+    <a href="/#llistat">Habitaciones</a>
+    <a href="/habitaciones-estudiantes-terrassa/">Estudiantes</a>
+    <a href="/habitaciones-profesionales-terrassa/">Profesionales</a>
+    <a href="/#faqs">Preguntas frecuentes</a>
+  </nav>
+  <a class="cta" href={'mailto:' + EMAIL}>Contacto</a>
+</div></header>
+<main><div class="wrap"><slot /></div></main>
+<footer><div class="wrap">
+  <div class="ft__g">
+    <div><h4>CoLiving Terrassa</h4>
+      <p style="color:var(--muted);max-width:44ch">Habitaciones en pisos compartidos de calidad en Terrassa (Barcelona) para estudiantes y profesionales. Gestión directa, sin comisión de agencia.</p>
+      <p><a href={'mailto:' + EMAIL}>{EMAIL}</a><br><a href={'tel:' + PHONE}>{PHONE_FMT}</a> · <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a></p></div>
+    <div><h4>Alquila una habitación</h4>
+      <ul style="list-style:none;line-height:2">
+        <li><a href="/">Todas las habitaciones</a></li>
+        <li><a href="/habitaciones-estudiantes-terrassa/">Para estudiantes</a></li>
+        <li><a href="/habitaciones-profesionales-terrassa/">Para profesionales</a></li>
+        <li><a href="/ca/">Català</a> · <a href="/en/">English</a></li></ul></div>
+    <div><h4>Nuestros pisos</h4>
+      <ul style="list-style:none;line-height:1.9">
+        {PISOS.map(p => <li><a href={urlPis(p.id)}>{p.nom} · {p.barri}</a></li>)}</ul></div>
+  </div>
+  <div class="ft__b"><span>© 2026 CoLiving Terrassa</span>
+    <span><a href="/avis-legal/?l=es">Aviso legal</a> · <a href="/politica-privacitat/?l=es">Política de privacidad</a> · <a href="/politica-cookies/?l=es">Política de cookies</a></span></div>
+</div></footer>
+<div class="ck" id="ck" role="dialog" aria-live="polite" aria-label="Cookies" hidden>
+  <p>Usamos cookies de analítica (Google Analytics) solo si las aceptas, para entender cómo se usa la web y mejorarla. Puedes cambiar de opinión cuando quieras. <a href="/politica-cookies/?l=es">Más información</a></p>
+  <div class="ck__b"><button class="btn btn--o" id="ckN" type="button">Rechazar</button><button class="btn" id="ckY" type="button">Aceptar</button></div>
+</div>
+<script is:inline set:html={COOKIE_JS}></script>
+</body>
+</html>
