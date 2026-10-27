@@ -4,7 +4,7 @@
 // les dates més llunyanes no s'envien al navegador (vegeu index.astro).
 export const SORTIDES = {
   'PAS-1': '2026-11-30',
-  'PAS-2': '2027-05-30',
+  'PAS-2': '2026-11-29',
   'PAS-3': '2027-05-30',
   'PAS-4': '2026-11-30',
   'SJO-1': '2027-03-30',
