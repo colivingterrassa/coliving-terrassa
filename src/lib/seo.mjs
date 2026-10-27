@@ -1,6 +1,8 @@
 // Contingut per a robots i cercadors (JSON-LD, <noscript>, llms.txt).
 // Es genera en compilar a partir de src/data/*.mjs: no s'ha d'editar a mà.
 export const SITE = 'https://www.colivingterrassa.com';
+// Les branques de prova (Cloudflare Pages) no s'han d'indexar; només la branca 'main' és pública.
+export const NOINDEX = !!process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main';
 export const SITE_NAME = 'CoLiving Terrassa';
 export const EMAIL = 'hola@colivingterrassa.com';
 export const PHONE = '+34646321585';
@@ -8,6 +10,7 @@ export const PHONE_FMT = '646 32 15 85';
 export const GMAPS = 'https://www.google.com/maps?cid=11265816990376276175';
 export const INSTAGRAM = 'https://www.instagram.com/colivingterrassa/';
 
+import { PIS_SLUGS } from './fotos.mjs';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const INTRO = {
@@ -80,13 +83,16 @@ export function buildJsonLd({ PISOS, HAB, FAQS }) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website, list, faq] }).replace(/</g, '\\u003c');
 }
 
-export function buildNoscript({ PISOS, HAB, FAQS }) {
+const H1 = { ca: "Lloguer d'habitacions a Terrassa per a estudiants i professionals", es: 'Alquiler de habitaciones en Terrassa para estudiantes y profesionales', en: 'Rooms for rent in Terrassa for students and professionals' };
+
+export function buildNoscript({ PISOS, HAB, FAQS, lang = 'es' }) {
   const st = stats({ PISOS, HAB });
   let h = `<div style="max-width:880px;margin:0 auto;padding:28px 20px;font-family:system-ui,sans-serif;line-height:1.6;color:#1F2A33">`;
-  h += `<h1>${esc(SITE_NAME)} · Lloguer d'habitacions per a estudiants i professionals</h1>`;
-  for (const l of LANGS) h += `<p lang="${l}">${esc(INTRO[l])}</p>`;
-  h += `<p>${esc(H.ca.price)} ${st.min} ${H.ca.priceTo} ${st.max} ${H.ca.perMonth} · ${esc(st.barris.join(', '))}</p>`;
-  for (const l of LANGS) {
+  h += `<h1>${esc(SITE_NAME)} · ${esc(H1[lang])}</h1>`;
+  const ORDRE = [lang, ...LANGS.filter(x => x !== lang)];
+  for (const l of ORDRE) h += `<p lang="${l}">${esc(INTRO[l])}</p>`;
+  h += `<p>${esc(H[lang].price)} ${st.min} ${H[lang].priceTo} ${st.max} ${H[lang].perMonth} · ${esc(st.barris.join(', '))}</p>`;
+  for (const l of ORDRE) {
     h += `<section lang="${l}"><h2>${esc(H[l].pisos)}</h2><ul>`;
     for (const p of PISOS) {
       h += `<li><strong>${l === 'en' ? 'Flat' : l === 'es' ? 'Piso' : 'Pis'} ${esc(p.nom)}</strong> — ${esc(pisLine(p, l))}.`;
@@ -97,7 +103,7 @@ export function buildNoscript({ PISOS, HAB, FAQS }) {
     for (const [q, a] of FAQS[l]) h += `<h3>${esc(q)}</h3><p>${esc(a)}</p>`;
     h += `</section>`;
   }
-  h += `<h2>${esc(H.ca.contact)}</h2><p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="tel:${PHONE}">${PHONE_FMT}</a> · <a href="${INSTAGRAM}">Instagram</a> · Terrassa, Barcelona · ${esc(H.ca.hours)}</p></div>`;
+  h += `<h2>${esc(H[lang].contact)}</h2><p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="tel:${PHONE}">${PHONE_FMT}</a> · <a href="${INSTAGRAM}">Instagram</a> · Terrassa, Barcelona · ${esc(H[lang].hours)}</p></div>`;
   return h;
 }
 
@@ -107,7 +113,7 @@ export function buildLlms({ PISOS, HAB, FAQS }) {
   L.push(`# ${SITE_NAME}`, '');
   L.push(`> ${INTRO.en}`, '');
   L.push(`- ES: ${INTRO.es}`, `- CA: ${INTRO.ca}`, '');
-  L.push(`Web: ${SITE}/ (català, castellano, English; el selector d'idioma és a la capçalera) · Contact: ${EMAIL} · Phone: ${PHONE} · Instagram: ${INSTAGRAM} · ${H.en.hours}`, '');
+  L.push(`Web: ${SITE}/ (castellano), ${SITE}/ca/ (català), ${SITE}/en/ (English) · Contact: ${EMAIL} · Phone: ${PHONE} · Instagram: ${INSTAGRAM} · ${H.en.hours}`, '');
   L.push('## Key facts', '');
   L.push(`- ${st.pisos} flats and ${st.hab} rooms in Terrassa (Barcelona): ${st.barris.join(', ')}.`);
   L.push(`- Monthly rent per room ranges from ${st.min} to ${st.max} euros; see the FAQ for what the price includes. Availability changes over time and is shown on the website.`);
@@ -120,6 +126,8 @@ export function buildLlms({ PISOS, HAB, FAQS }) {
     L.push(`## ${H[l].faq} (${l})`, '');
     for (const [q, a] of FAQS[l]) L.push(`**${q}**`, a, '');
   }
-  L.push('## Optional', '', `- [Website](${SITE}/): rooms, photos, reviews and enquiry forms`, '');
+  L.push('## Pages', '', `- [Rooms in Terrassa (ES)](${SITE}/): rooms, photos, reviews and enquiry forms`, `- [Rooms for students (ES)](${SITE}/habitaciones-estudiantes-terrassa/)`, `- [Rooms for professionals (ES)](${SITE}/habitaciones-profesionales-terrassa/)`);
+  for (const p of PISOS) L.push(`- [Flat ${p.nom}, ${p.barri} (ES)](${SITE}/pisos/${PIS_SLUGS[p.id]}/)`);
+  L.push('');
   return L.join('\n');
 }
