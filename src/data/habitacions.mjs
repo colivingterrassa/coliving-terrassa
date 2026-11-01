@@ -56,7 +56,7 @@ export const HAB=[
   d:{ca:'Habitació doble de 10 m² amb bany compartit.',
      es:'Habitación doble de 10 m² con baño compartido.',
      en:'Double room of 10 m² with a shared bathroom.'}},
- {id:15,pis:4,codi:'CAT-1',m2:15,bany:'compartit',tipus:'doble',preu:425,estat:'lliure',des:'2026-11-01',
+ {id:15,pis:4,codi:'CAT-1',m2:15,bany:'compartit',tipus:'doble',preu:425,estat:'ocupada',des:null,
   d:{ca:'Habitació doble de 15 m² amb bany compartit.',
      es:'Habitación doble de 15 m² con baño compartido.',
      en:'Double room of 15 m² with a shared bathroom.'}},
