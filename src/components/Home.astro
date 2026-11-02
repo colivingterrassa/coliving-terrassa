@@ -1461,10 +1461,6 @@ function obrirPis(id){
 
         <div class="pv__sec"><h3>${t('sobrePis')}</h3><p>${p.desc[L]}</p></div>
 
-        <div class="pv__sec"><h3>${t('entorn')}</h3>${pintaEntorn(p.barri)}</div>
-
-        ${p.amen[L].length?'<div class="pv__sec"><h3>'+t('comoditats')+'</h3><div class="amen">'+p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')+'</div></div>':''}
-
         <div class="pv__sec"><h3>${t('habsDisp')} <span style="font-family:var(--sans);font-size:.85rem;color:var(--muted);font-weight:400">· ${totes.length}</span></h3>
           <div class="rooms">${totes.map((h,i)=>{
             const e=estatHab(h), ok=!actius||habPassa(h,f);
@@ -1478,6 +1474,10 @@ function obrirPis(id){
               </div>
               <div class="room__p"><b>${h.preu} €</b><span>${t('mes')}</span></div>
             </button>`}).join('')}</div></div>
+
+        ${p.amen[L].length?'<div class="pv__sec"><h3>'+t('comoditats')+'</h3><div class="amen">'+p.amen[L].map(a=>'<span>'+esc(a)+'</span>').join('')+'</div></div>':''}
+
+        <div class="pv__sec"><h3>${t('entorn')}</h3>${pintaEntorn(p.barri)}</div>
 
         ${revs.length?`<div class="pv__sec"><h3>${t('ressPis')}</h3>
           <div style="display:grid;gap:16px;margin-top:6px">${revs.map(r=>`
