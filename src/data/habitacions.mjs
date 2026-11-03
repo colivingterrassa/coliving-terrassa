@@ -68,7 +68,7 @@ export const HAB=[
   d:{ca:'Habitació individual de 10 m² amb bany compartit. Llit de 110 cm.',
      es:'Habitación individual de 10 m² con baño compartido. Cama de 110 cm.',
      en:'Single room of 10 m² with a shared bathroom. 110 cm bed.'}},
- {id:18,pis:4,codi:'CAT-4',m2:11,bany:'compartit',tipus:'doble',preu:400,estat:'lliure',des:'2026-11-01',
+ {id:18,pis:4,codi:'CAT-4',m2:11,bany:'compartit',tipus:'doble',preu:400,estat:'ocupada',des:null,
   d:{ca:'Habitació doble d\'11 m² amb bany compartit.',
      es:'Habitación doble de 11 m² con baño compartido.',
      en:'Double room of 11 m² with a shared bathroom.'}},
