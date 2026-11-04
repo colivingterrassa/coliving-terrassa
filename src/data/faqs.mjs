@@ -7,7 +7,7 @@ export const FAQS={
        ["Es pot empadronar a la vivenda?","Sí. Un cop signat el contracte, et facilitem tota la documentació que necessites per empadronar-te a Terrassa sense cap cost."],
        ["Què passa si he de marxar abans d'acabar el contracte?","No hi ha cap penalització sempre que hagis complert els primers 6 mesos de contracte o més. Si marxes abans de complir els primers 6 mesos, no es retorna la fiança."],
        ["Es poden portar mascotes?","Depèn del pis i dels companys que hi visquin en aquell moment. Consulta'ns el cas concret i te'ho confirmem abans de reservar."],
-       ["Com escolliu els companys de pis?","Fem una entrevista breu amb cada candidat per entendre els horaris, l'estil de vida i què busca. No es tracta de filtrar ningú, sinó que la convivència funcioni des del primer dia."],
+       ["Com escolliu els companys de pis?","Fem una entrevista amb cada candidat per entendre els horaris, l'estil de vida i què busca. No es tracta de filtrar ningú, sinó que la convivència funcioni des del primer dia."],
        ["Les habitacions venen moblades?","Sí, totes. Inclouen llit amb matalàs, escriptori, cadira, armari i il·luminació. Només has de portar la roba de llit i les teves coses."],
        ["Quant triga la resposta a una sol·licitud?","Menys de 24 hores laborables. Si envies la sol·licitud en cap de setmana, et responem dilluns al matí."]],
  es:[["¿Qué duración tiene el contrato?","El contrato es de 6 meses y se puede prorrogar sin penalización."],
@@ -17,7 +17,7 @@ export const FAQS={
        ["¿Se puede empadronar en la vivienda?","Sí. Una vez firmado el contrato, te facilitamos toda la documentación que necesitas para empadronarte en Terrassa sin ningún coste."],
        ["¿Qué pasa si tengo que marcharme antes de acabar el contrato?","No hay ninguna penalización siempre que hayas cumplido los primeros 6 meses de contrato o más. Si te marchas antes de cumplir los primeros 6 meses, no se devuelve la fianza."],
        ["¿Se pueden llevar mascotas?","Depende del piso y de los compañeros que vivan en él en ese momento. Consúltanos el caso concreto y te lo confirmamos antes de reservar."],
-       ["¿Cómo elegís a los compañeros de piso?","Hacemos una entrevista breve con cada candidato para entender sus horarios, su estilo de vida y qué busca. No se trata de filtrar a nadie, sino de que la convivencia funcione desde el primer día."],
+       ["¿Cómo elegís a los compañeros de piso?","Hacemos una entrevista con cada candidato para entender sus horarios, su estilo de vida y qué busca. No se trata de filtrar a nadie, sino de que la convivencia funcione desde el primer día."],
        ["¿Las habitaciones vienen amuebladas?","Sí, todas. Incluyen cama con colchón, escritorio, silla, armario e iluminación. Solo tienes que traer la ropa de cama y tus cosas."],
        ["¿Cuánto tarda la respuesta a una solicitud?","Menos de 24 horas laborables. Si envías la solicitud en fin de semana, te respondemos el lunes por la mañana."]],
  en:[["How long is the contract?","The contract is for 6 months and can be extended with no penalty."],
@@ -27,7 +27,7 @@ export const FAQS={
        ["Can I register my address there?","Yes. Once the contract is signed we provide all the documentation you need to register your address in Terrassa at no cost."],
        ["What if I need to leave before the contract ends?","There is no penalty as long as you have completed the first 6 months of the contract or more. If you leave before completing the first 6 months, the deposit is not refunded."],
        ["Are pets allowed?","It depends on the flat and on who is living there at the time. Ask us about your specific case and we will confirm before you book."],
-       ["How do you choose flatmates?","We hold a short interview with each applicant to understand their schedule, lifestyle and what they are looking for. It is not about screening people out, but about making sure shared living works from day one."],
+       ["How do you choose flatmates?","We hold an interview with each applicant to understand their schedule, lifestyle and what they are looking for. It is not about screening people out, but about making sure shared living works from day one."],
        ["Do the rooms come furnished?","Yes, all of them. They include a bed with a mattress, desk, chair, wardrobe and lighting. You only need to bring bed linen and your personal belongings."],
        ["How long does it take to get a reply?","Less than 24 working hours. If you send your enquiry at the weekend, we reply on Monday morning."]]
 };
