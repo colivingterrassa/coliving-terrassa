@@ -6,7 +6,7 @@ export const TIT = {
   adreca: 'C/ Transversal, 226, 08225 Terrassa (Barcelona)',
   registre: '',
   email: 'hola@colivingterrassa.com',
-  tel: '646 32 15 85',
+  tel: '689 41 35 93',
   web: 'www.colivingterrassa.com',
   actualitzat: { ca: 'octubre de 2026', es: 'octubre de 2026', en: 'October 2026' }
 };

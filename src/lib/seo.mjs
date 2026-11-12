@@ -5,8 +5,8 @@ export const SITE = 'https://www.colivingterrassa.com';
 export const NOINDEX = !!process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main';
 export const SITE_NAME = 'CoLiving Terrassa';
 export const EMAIL = 'hola@colivingterrassa.com';
-export const PHONE = '+34646321585';
-export const PHONE_FMT = '646 32 15 85';
+export const PHONE = '+34689413593';
+export const PHONE_FMT = '689 41 35 93';
 export const GMAPS = 'https://www.google.com/maps?cid=11265816990376276175';
 export const INSTAGRAM = 'https://www.instagram.com/colivingterrassa/';
 
